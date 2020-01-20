@@ -5,7 +5,7 @@ date: "18/01/2020"
 output:
   beamer_presentation:
     citation_package: natbib
-    highlight: zenburn
+    highlight: tango
     latex_engine: xelatex
 fontsize: 12pt
 bibliography: linguistics.bib
@@ -23,7 +23,10 @@ theme_set(theme_minimal())
 library(brms)
 library(coretta2018itaegg)
 data("ita_egg")
+ita_egg <- drop_na(ita_egg, vot)
 ```
+
+[mention installation]
 
 ## Random variables
 
@@ -88,6 +91,8 @@ $\sigma \sim HalfCauchy(x_0, \gamma)$
 
 ## Normal prior
 
+[empirical rule]
+
 ## Italian VOT
 
 * Previous literature on VOT in Italian \citep{esposito2002, stevens2010a} report VOT values for voiceless stops in the range of 20--60 ms.
@@ -97,15 +102,129 @@ $\sigma \sim HalfCauchy(x_0, \gamma)$
 ## Italian VOT
 
 ```{r mean-prior}
-plot(-30:110, dnorm(-30:110, 40, 10), type = "l", ann = FALSE)
+plot(-30:110, dnorm(-30:110, 40, 10), type = "l", main = "Normal(40, 10)", xlab = "", ylab = "")
 ```
 
 ## Italian VOT
 
 ```{r mean-prior-2}
-plot(-30:110, dnorm(-30:110, 40, 20), type = "l", ann = FALSE)
+plot(-30:110, dnorm(-30:110, 40, 20), type = "l", main = "Normal(40, 20)", xlab = "", ylab = "")
 ```
 
 ## Italian VOT
 
+\centering \Large
 
+$vot_i \sim Normal(\mu, \sigma)$
+
+$\mu \sim Normal(40, 10)$
+
+$\sigma \sim HalfCauchy(x_0, \gamma)$
+
+## Cauchy prior
+
+```{r cauchy-prior}
+plot(seq(-100, 100, by = 0.1), dcauchy(seq(-100, 100, by = 0.1), 0, 10), type = "l", main = "Cauchy", xlab = "", ylab = "")
+lines(seq(-100, 100, by = 0.1), dcauchy(seq(-100, 100, by = 0.1), 0, 20), type = "l")
+lines(seq(-100, 100, by = 0.1), dcauchy(seq(-100, 100, by = 0.1), 0, 30), type = "l")
+```
+
+## Cauchy prior
+
+```{r cauchy-prior-2}
+plot(seq(0, 100, by = 0.1), dcauchy(seq(0, 100, by = 0.1), 0, 10), type = "l", main = "HalfCauchy", xlab = "", ylab = "")
+lines(seq(0, 100, by = 0.1), dcauchy(seq(0, 100, by = 0.1), 0, 20), type = "l")
+lines(seq(0, 100, by = 0.1), dcauchy(seq(0, 100, by = 0.1), 0, 30), type = "l")
+```
+
+## Italian VOT
+
+\centering \Large
+
+$vot_i \sim Normal(\mu, \sigma)$
+
+$\mu \sim Normal(40, 10)$
+
+$\sigma \sim HalfCauchy(0, 10)$
+
+## Italian VOT
+
+* We have a model which incorporates our knowledge about VOT (through the priors for $\mu$ and $\sigma$).
+* Now we want to obtain the **posterior distributions** of $\mu$ and $\sigma$.
+  * The posterior distribution is the prior distribution *conditioned* on the data.
+* **brms** R package: Bayesian Regression Models using Stan \citep{burkner2018}.
+
+## brms
+
+* Stan \citep{stan-development-team2017}.
+  * Statistical programming language written in C++ for fitting Bayesian models (calculate posterior distributions).
+  * Calculation can be complex and/or impossible, so we take many samples from the data and from the possible parameter values to find the posterior distributions of the hyperparameters.
+  * Markov Chain Monte Carlo (MCMC) sampling using the No-U-Turn sampler (NUTS).
+* brms is an interface between R and Stan.
+* `brm()` function from brms.
+  * lme4 syntax (`y ~ x + (1|w)`).
+  * Creates a Stan model, which is compiled and run.
+
+## brms
+
+```{r brm, eval=FALSE, echo=TRUE}
+library(brms)
+
+vot1 <- brm(
+  <model_formula>,
+  <family>,
+  <prior>,
+  <data>,
+  chains = 4,
+  iter = 2000
+)
+```
+
+## brms
+
+```{r brm-2, eval=FALSE, echo=TRUE}
+library(brms)
+
+vot1 <- brm(
+  vot ~ 1,
+  family = gaussian(),
+  <prior>,
+  data = ita_egg,
+  chains = 4,
+  iter = 2000
+)
+```
+
+## Get prior
+
+```{r get-prior, echo=TRUE}
+get_prior(
+  vot ~ 1,
+  family = gaussian(),
+  data = ita_egg
+)
+```
+
+## Prior predictive checks
+
+## Set prior
+
+```{r set-prior}
+priors <- c(
+  prior(normal(40, 10), class = Intercept),
+  prior(cauchy(0, 10), class = sigma)
+)
+```
+
+## Run the model
+
+```{r vot1, echo=TRUE}
+vot1 <- brm(
+  vot ~ 1,
+  family = gaussian(),
+  prior = priors,
+  data = ita_egg,
+  chains = 4,
+  iter = 2000
+)
+```
