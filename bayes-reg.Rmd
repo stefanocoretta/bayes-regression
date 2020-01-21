@@ -21,6 +21,7 @@ knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 theme_set(theme_minimal())
 library(brms)
+options(mc.cores = parallel::detectCores())
 library(coretta2018itaegg)
 data("ita_egg")
 ita_egg <- drop_na(ita_egg, vot)
@@ -48,11 +49,11 @@ ita_egg <- drop_na(ita_egg, vot)
 
 \centering \Large
 
-$vot \sim Normal(\mu, \sigma)$
+$vot_i \sim Normal(\mu, \sigma)$
 
-$voiced \sim Bernoulli(p)$
+$voiced_i \sim Bernoulli(p)$
 
-$DoubleDative \sim Poisson(\lambda)$
+$DoubleDative_i \sim Poisson(\lambda)$
 
 ## Frequentist vs Bayesian view
 
@@ -74,6 +75,10 @@ $\mu \sim Normal(\mu_1, \sigma_1)$
 
 $\sigma \sim HalfCauchy(x_0, \gamma)$
 
+## Bayes' Theorem
+
+[...]
+
 ## Priors
 
 * We can incorporate previous knowledge about the hyperparameters as **priors** (prior distributions).
@@ -82,12 +87,10 @@ $\sigma \sim HalfCauchy(x_0, \gamma)$
 
 ## Priors
 
-* Informative and uninformative priors.
-* Informative priors.
-  * Weakly informative.
-  * Strongly informative.
-* Uninformative priors.
+* Informative and weakly informative priors.
+* Uninformative or diffuse priors.
   * Uniform distribution.
+* Regularising priors.
 
 ## Normal prior
 
