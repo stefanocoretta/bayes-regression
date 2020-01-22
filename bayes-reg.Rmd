@@ -77,7 +77,11 @@ $\sigma \sim HalfCauchy(x_0, \gamma)$
 
 ## Bayes' Theorem
 
-[...]
+$$ P(\theta \mid d) = \frac{P(d \mid \theta) \, P(\theta)}{P(d)} $$
+
+## Bayes' Theorem
+
+$$ posterior\ probability = \frac{likelihood \times prior}{marginal\ likelihood} $$
 
 ## Priors
 
@@ -152,7 +156,7 @@ $\sigma \sim HalfCauchy(0, 10)$
 
 ## Italian VOT
 
-* We have a model which incorporates our knowledge about VOT (through the priors for $\mu$ and $\sigma$).
+* We have a model which incorporates (some of) our knowledge about VOT (through the priors for $\mu$ and $\sigma$).
 * Now we want to obtain the **posterior distributions** of $\mu$ and $\sigma$.
   * The posterior distribution is the prior distribution *conditioned* on the data.
 * **brms** R package: Bayesian Regression Models using Stan \citep{burkner2018}.
