@@ -232,6 +232,54 @@ vot1 <- brm(
   prior = priors,
   data = ita_egg,
   chains = 4,
-  iter = 2000
+  iter = 2000,
+  file = "./cache/vot1"
 )
 ```
+
+## Model summary
+
+```{r vot1-sum, echo=TRUE}
+vot1
+```
+
+## Plot model
+
+```{r vot1-plot, echo=TRUE}
+plot(vot1)
+```
+
+
+## Posterior predictive check
+
+```{r vot1-pp, echo=TRUE}
+pp_check(vot1, nsamples = 100)
+```
+
+## Adding predictors
+
+$vot_i \sim Normal(\mu_i, \sigma)$
+
+$\mu_i = \alpha + \beta_1 \times coronal_i + \beta_2 \times velar_i$
+
+$\alpha \sim Normal(\mu_1, \sigma_1)$
+
+$\beta_1 \sim Normal(\mu_2, \sigma_2)$
+
+$\beta_2 \sim Normal(\mu_3, \sigma_3)$
+
+$\sigma \sim HalfCauchy(x_0, \gamma)$
+
+## Adding predictors
+
+$vot_i \sim Normal(\mu_i, \sigma)$
+
+$\mu_i = \alpha + \beta_1 \times coronal_i + \beta_2 \times velar_i$
+
+$\alpha \sim Normal(25, 10)$
+
+$\beta_1 \sim Normal(\mu_2, \sigma_2)$
+
+$\beta_2 \sim Normal(\mu_3, \sigma_3)$
+
+$\sigma \sim HalfCauchy(0, 10)$
