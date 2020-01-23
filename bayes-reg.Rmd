@@ -278,8 +278,8 @@ $\mu_i = \alpha + \beta_1 \times coronal_i + \beta_2 \times velar_i$
 
 $\alpha \sim Normal(25, 10)$
 
-$\beta_1 \sim Normal(\mu_2, \sigma_2)$
+$\beta_1 \sim Normal(10, 10)$
 
-$\beta_2 \sim Normal(\mu_3, \sigma_3)$
+$\beta_2 \sim Normal(20, 10)$
 
 $\sigma \sim HalfCauchy(0, 10)$
