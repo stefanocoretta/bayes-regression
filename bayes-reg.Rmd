@@ -283,3 +283,76 @@ $\beta_1 \sim Normal(10, 10)$
 $\beta_2 \sim Normal(20, 10)$
 
 $\sigma \sim HalfCauchy(0, 10)$
+
+## Get prior
+
+```{r get-prior-2}
+get_prior(
+  vot ~ 1 + c1_place,
+  family = gaussian(),
+  data = ita_egg
+)
+```
+
+## Set prior
+
+```{r set-prior-2}
+priors <- c(
+  prior(normal(40, 10), class = Intercept),
+  prior(cauchy(0, 10), class = sigma),
+  prior(normal(10, 10), class = b, coef = "c1_placecoronal"),
+  prior(normal(20, 10), class = b, coef = "c1_placevelar")
+)
+```
+
+## Run the model
+
+```{r vot2, echo=TRUE}
+vot2 <- brm(
+  vot ~ 1 + c1_place,
+  family = gaussian(),
+  prior = priors,
+  data = ita_egg,
+  chains = 4,
+  iter = 2000,
+  file = "./cache/vot2"
+)
+```
+
+## Random effects
+
+```{r get-prior-3}
+get_prior(
+  vot ~ 1 + c1_place + (1 + c1_place | speaker),
+  family = gaussian(),
+  data = ita_egg
+)
+```
+
+## Random effects
+
+```{r set-prior-3}
+priors <- c(
+  prior(normal(40, 10), class = Intercept),
+  prior(cauchy(0, 10), class = sigma),
+  prior(normal(10, 10), class = b, coef = "c1_placecoronal"),
+  prior(normal(20, 10), class = b, coef = "c1_placevelar"),
+  prior(normal(0, 25), class = sd),
+  prior(lkj(2), class = cor)
+)
+```
+
+## Random effects
+
+```{r vot3, echo=TRUE}
+vot3 <- brm(
+  vot ~ 1 + c1_place + (1 + c1_place | speaker),
+  family = gaussian(),
+  prior = priors,
+  data = ita_egg,
+  chains = 4,
+  iter = 2000,
+  file = "./cache/vot3"
+)
+```
+
