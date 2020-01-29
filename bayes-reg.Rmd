@@ -22,6 +22,7 @@ library(tidyverse)
 theme_set(theme_minimal())
 library(brms)
 options(mc.cores = parallel::detectCores())
+library(extraDistr)
 library(coretta2018itaegg)
 data("ita_egg")
 ita_egg <- drop_na(ita_egg, vot)
@@ -212,8 +213,6 @@ get_prior(
 )
 ```
 
-## Prior predictive checks
-
 ## Set prior
 
 ```{r set-prior}
@@ -222,6 +221,36 @@ priors <- c(
   prior(cauchy(0, 10), class = sigma)
 )
 ```
+
+## Prior predictive checks
+
+```{r vot1-priors, echo=TRUE}
+nsim <- 1000
+nobs <- 100
+
+y <- matrix(rep(NA, nsim * nobs), ncol = nobs)
+
+mu <- rnorm(nsim, 40, 10)
+sigma <- rhcauchy(nsim, 10)
+
+for (i in 1:nsim) {
+  y[i,] <- rnorm(nobs, mean = mu[i], sd = sigma[i])
+}
+```
+
+## Prior predictive checks
+
+```{r vot1-priors-plot, echo=TRUE}
+op <- par(mfrow = c(3, 3))
+rand_sample <- sample(1:nsim, 9)
+
+for (i in rand_sample) {
+  plot(density(y[i,]), main = "")
+}
+
+par(op)
+```
+
 
 ## Run the model
 
