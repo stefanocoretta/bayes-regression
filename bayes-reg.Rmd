@@ -350,6 +350,37 @@ vot2 <- brm(
 
 ## Random effects
 
+\centering \small
+
+$vot_i \sim Normal(\mu_i, \sigma)$
+
+$\mu_i = \alpha + \alpha_{speaker[i]} + (\beta_1 + \beta_{1speaker[i]}) \times coronal_i + (\beta_2 + \beta_{2speaker[i]}) \times velar_i$
+
+$$\begin{bmatrix}
+\alpha_{speaker}\\
+\beta_{1speaker[i]}\\
+\beta_{2speaker[i]}
+\end{bmatrix} \sim MVNormal(\begin{bmatrix}0\\0\\0\end{bmatrix}, S)
+$$
+
+$\alpha \sim Normal(25, 10)$
+
+$\beta_1 \sim Normal(10, 10)$
+
+$\beta_2 \sim Normal(20, 10)$
+
+$\sigma_{\alpha{speaker}} \sim Normal(0, \sigma_{speaker})$
+
+$\sigma_{\beta{1speaker}} \sim HalfCauchy(0, 10)$
+
+$\sigma_{\beta{2speaker}} \sim HalfCauchy(0, 10)$
+
+$\sigma_{speaker} \sim HalfCauchy(0, 10)$
+
+$\sigma \sim HalfCauchy(0, 10)$
+
+## Random effects
+
 ```{r get-prior-3}
 get_prior(
   vot ~ 1 + c1_place + (1 + c1_place | speaker),
