@@ -28,6 +28,33 @@ data("ita_egg")
 ita_egg <- drop_na(ita_egg, vot)
 ```
 
+```{r read-bernoulli-data, message=FALSE}
+pilot <- list.files(
+  path = "./data/perceptual/",
+  pattern = "*.csv",
+  full.names = TRUE
+) %>%
+  map_df(~read_csv(., col_types = cols(.default = "c"))) %>%
+  mutate(
+    key_resp_2.keys = ifelse(key_resp_2.keys == "z", "d", "t"),
+    key_resp_8.keys = ifelse(key_resp_8.keys == "z", "t", "d"),
+    response = coalesce(key_resp_2.keys, key_resp_8.keys),
+    response = factor(response, levels = c("t", "d")),
+    burst = as.numeric(burst),
+    voicing = as.numeric(voicing),
+    response_n = as.numeric(response) - 1,
+    vowel = factor(vowel, levels = c("a", "i", "u"))
+  ) %>%
+  filter(!is.na(response))
+
+contrasts(pilot$vowel) <- "contr.sum"
+
+burst <- filter(pilot, condition == "burst")
+voicing <- filter(pilot, condition == "voicing")
+```
+
+## Installation
+
 [mention installation]
 
 ## Random variables
@@ -278,7 +305,6 @@ vot1
 plot(vot1)
 ```
 
-
 ## Posterior predictive check
 
 ```{r vot1-pp, echo=TRUE}
@@ -313,9 +339,9 @@ $\beta_2 \sim Normal(20, 10)$
 
 $\sigma \sim HalfCauchy(0, 10)$
 
-## Get prior
+## Adding predictors
 
-```{r get-prior-2}
+```{r get-prior-2, echo=TRUE}
 get_prior(
   vot ~ 1 + c1_place,
   family = gaussian(),
@@ -323,18 +349,18 @@ get_prior(
 )
 ```
 
-## Set prior
+## Adding predictors
 
-```{r set-prior-2}
+```{r set-prior-2, echo=TRUE}
 priors <- c(
-  prior(normal(40, 10), class = Intercept),
+  prior(normal(25, 10), class = Intercept),
   prior(cauchy(0, 10), class = sigma),
   prior(normal(10, 10), class = b, coef = "c1_placecoronal"),
   prior(normal(20, 10), class = b, coef = "c1_placevelar")
 )
 ```
 
-## Run the model
+## Adding predictors
 
 ```{r vot2, echo=TRUE}
 vot2 <- brm(
@@ -360,10 +386,11 @@ $$\begin{bmatrix}
 \alpha_{speaker}\\
 \beta_{1speaker[i]}\\
 \beta_{2speaker[i]}
-\end{bmatrix} \sim MVNormal(\begin{bmatrix}0\\0\\0\end{bmatrix}, S)
-$$
+\end{bmatrix} \sim MVNormal(\begin{bmatrix}0\\0\\0\end{bmatrix}, S)$$
 
 $\alpha \sim Normal(25, 10)$
+
+$\alpha_{speaker} \sim Normal(0, \sigma_{speaker})$
 
 $\beta_1 \sim Normal(10, 10)$
 
@@ -381,7 +408,7 @@ $\sigma \sim HalfCauchy(0, 10)$
 
 ## Random effects
 
-```{r get-prior-3}
+```{r get-prior-3, echo=TRUE}
 get_prior(
   vot ~ 1 + c1_place + (1 + c1_place | speaker),
   family = gaussian(),
@@ -391,7 +418,7 @@ get_prior(
 
 ## Random effects
 
-```{r set-prior-3}
+```{r set-prior-3, echo=TRUE}
 priors <- c(
   prior(normal(40, 10), class = Intercept),
   prior(cauchy(0, 10), class = sigma),
@@ -414,5 +441,50 @@ vot3 <- brm(
   iter = 2000,
   file = "./cache/vot3"
 )
+```
+
+## Random effects
+
+```{r vot3-plot}
+plot(vot3)
+```
+
+## Random effects
+
+```{r vot3-sum, echo=TRUE}
+vot3
+```
+
+## Binomial logistic regression
+
+```{r set-prior-burst, echo=TRUE}
+priors <- c(
+  prior(student_t(3, 0, 2), class = Intercept),
+  prior(student_t(3, 0, 2), class = b),
+  prior(cauchy(0, 1), class = sd),
+  prior(lkj(2), class = cor)
+)
+```
+
+## Binomial logistic regression
+
+```{r burst, echo=TRUE}
+burst1 <- brm(
+  response_n ~
+    burst *
+    vowel +
+    (1+burst|participant),
+  data = burst,
+  prior = priors,
+  family = bernoulli,
+  file = "./cache/burst1",
+  control = list(adapt_delta = 0.999)
+)
+```
+
+## Binomial logistic regression
+
+```{r plot-cond-burst, echo=TRUE}
+conditional_effects(burst1, effects = "burst:vowel")
 ```
 
