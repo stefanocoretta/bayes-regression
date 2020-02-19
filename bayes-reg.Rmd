@@ -27,8 +27,13 @@ library(coretta2018itaegg)
 data("ita_egg")
 ita_egg <- drop_na(ita_egg, vot)
 ```
+## Installation
 
-[mention installation]
+* Safe method:
+  * Install Rstan first: https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started (see Installation of Rstan, Checking the C++ Toolchain, and Configuration of the C++ Toolchain).
+    * Note that in Checking the C++ Toolchain details differ depending on OS.
+  * Install brms: https://github.com/paul-buerkner/brms#how-do-i-install-brms.
+  
 
 ## Random variables
 
@@ -99,7 +104,11 @@ $$ posterior\ probability = \frac{likelihood \times prior}{marginal\ likelihood}
 
 ## Normal prior
 
-[empirical rule]
+!(./img/Empirical_rule_histogram.svg)
+
+\footnotesize
+
+Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
 
 ## Italian VOT
 
