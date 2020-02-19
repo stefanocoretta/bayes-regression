@@ -494,3 +494,30 @@ burst1 <- brm(
 ```{r plot-cond-burst, echo=TRUE}
 conditional_effects(burst1, effects = "burst:vowel")
 ```
+
+## Inference
+
+* We want to know two things:
+  * If there is **evidence for our hypothesis H** (or for the value of the parameter $\theta$), and
+  * What the **strength** of the evidence is.
+* This is the aim of inferential statistics.
+* We test H against empirical data (hypothesis testing).
+  * It is important to decide in advance the details of the analysis (model and prior specification among other things).
+* Inference is ultimately a long-term endaveour (via accumulation of knowledge).
+
+## Inference
+
+* Three ways of doing inference (hypothesis testing) with Bayesian statistics:
+  * Inference from the posterior.
+  * Inference using a Region Of Practical Equivalence (ROPE).
+  * Inference using the Bayes factor.
+
+## Inference from the posterior
+
+* H: Condition B decreases reaction times.
+
+* Posterior: 95% CI = [-80, -15] ms.
+
+* Inference: The posterior suggests that Condition B decreases reaction times by 15 to 80 ms at 95% confidence.
+
+## Inference with a ROPE
