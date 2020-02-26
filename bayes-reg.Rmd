@@ -7,10 +7,11 @@ output:
     citation_package: natbib
     highlight: tango
     latex_engine: xelatex
-fontsize: 12pt
+fontsize: 11pt
 bibliography: linguistics.bib
 biblio-style: unified.bst
 header-includes:
+- \usepackage{graphicx}
 - \frenchspacing
 - \usepackage{cleveref}
 - \usetheme{metropolis}
@@ -129,7 +130,7 @@ $$ posterior\ probability = \frac{likelihood \times prior}{marginal\ likelihood}
 
 ## Normal prior
 
-!(./img/Empirical_rule_histogram.svg)
+![empirical rule](./img/Empirical_rule_histogram.png)
 
 \footnotesize
 
@@ -494,6 +495,16 @@ burst1 <- brm(
 ```{r plot-cond-burst, echo=TRUE}
 conditional_effects(burst1, effects = "burst:vowel")
 ```
+
+## Inference
+
+![statistical inference](./img/big_picture_mod1.png)
+
+\footnotesize Open Learning Initiative, https://oli.cmu.edu/courses/concepts-of-statistics/ (CC BY-NC-SA 4.0)
+
+## Inference
+
+
 
 ## Inference
 
