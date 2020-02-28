@@ -504,14 +504,17 @@ conditional_effects(burst1, effects = "burst:vowel")
 
 ## Inference
 
-
+![Mapping of hypothesis, process models, and statistical models](./img/hps-rel.png)
 
 ## Inference
 
 * We want to know two things:
   * If there is **evidence for our hypothesis H** (or for the value of the parameter $\theta$), and
   * What the **strength** of the evidence is.
-* This is the aim of inferential statistics.
+
+## Inference
+
+* **Inferential statistics**.
 * We test H against empirical data (hypothesis testing).
   * It is important to decide in advance the details of the analysis (model and prior specification among other things).
 * Inference is ultimately a long-term endaveour (via accumulation of knowledge).
@@ -519,16 +522,33 @@ conditional_effects(burst1, effects = "burst:vowel")
 ## Inference
 
 * Three ways of doing inference (hypothesis testing) with Bayesian statistics:
-  * Inference from the posterior.
-  * Inference using a Region Of Practical Equivalence (ROPE).
-  * Inference using the Bayes factor.
+  * Inference from the **posterior**.
+  * Inference using a **Region Of Practical Equivalence** (ROPE).
+  * Inference using the **Bayes factor**.
 
 ## Inference from the posterior
 
-* H: Condition B decreases reaction times.
+* **H**: Condition B decreases reaction times relative to Condition A.
+  * You have chosen a prior which appropriately conveys the content of this H.
 
-* Posterior: 95% CI = [-80, -15] ms.
+* **Posterior**: Condition B 95% CI = [-80, -15] ms.
 
-* Inference: The posterior suggests that Condition B decreases reaction times by 15 to 80 ms at 95% confidence.
+* **Inference**: The posterior suggests that Condition B decreases reaction times by 15 to 80 ms at 95% confidence.
 
 ## Inference with a ROPE
+
+H0 vs H1
+
+* H1 states that Condition B increases segment duration (alternative hypothesis), while H0 states that Condition B does not increase segment duration (null hypthesis, null effect).
+  * $H_1: \beta > 0$
+  * $H_0: \beta = 0$
+* Region of Practical Equivalence (ROPE):
+  * Define a region around $\beta = 0$ that practically correponds to a null effect.
+    * For example: [-5, +5] ms ($-5 \geq \beta \leq +5$ = null effect).
+    * This ROPE has a width of 10 ms.
+  * Collect data until the 95% CI of $\beta \leq 10$.
+    * Independent from the values in the range of $\beta$.
+
+## Inference with a ROPE
+
+![Possible scenarios](./img/rope.png)
