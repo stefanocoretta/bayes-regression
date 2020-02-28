@@ -535,6 +535,15 @@ conditional_effects(burst1, effects = "burst:vowel")
 
 * **Inference**: The posterior suggests that Condition B decreases reaction times by 15 to 80 ms at 95% confidence.
 
+## Inference from the posterior
+
+* **H**: Condition B decreases reaction times relative to Condition A *by 100 ms*.
+  * You have chosen a prior which appropriately conveys the content of this H.
+
+* **Posterior**: Condition B 95% CI = [-80, -15] ms.
+
+* **Inference**: The posterior suggests that Condition B decreases reaction times by a smaller amount than expected from H (15 to 80 ms at 95% confidence).
+
 ## Inference with a ROPE
 
 H0 vs H1
@@ -546,9 +555,16 @@ H0 vs H1
   * Define a region around $\beta = 0$ that practically correponds to a null effect.
     * For example: [-5, +5] ms ($-5 \geq \beta \leq +5$ = null effect).
     * This ROPE has a width of 10 ms.
-  * Collect data until the 95% CI of $\beta \leq 10$.
-    * Independent from the values in the range of $\beta$.
+  * Choose a minimal sample size (ideally based on prospective power analyses).
+  * Collect data until the 95% CI of $\beta$ has width equal to or smaller than the width of the ROPE.
+    * We focus on the estimate **precision** of $\beta$.
+    * Independent from the value of $\beta$.
+    * Higher precision means greater confidence in the estimated value of $\beta$.
 
 ## Inference with a ROPE
 
 ![Possible scenarios](./img/rope.png)
+
+## Bayes Factor
+
+
