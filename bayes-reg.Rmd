@@ -567,4 +567,66 @@ H0 vs H1
 
 ## Bayes Factor
 
+The Bayes factor is the ratio of the likelihood of H1 to the likelihood of H2.
 
+$BF_{12} = \mathcal{L}(H_1) / \mathcal{L}(H_2)$
+
+## Bayes Factor
+
+| BF      | p(M1\|D)    | evidence    |
+|---------|------------|-------------|
+| 1--3    | 0.5--0.75  | weak        |
+| 3--20   | 0.75--0.95 | positive    |
+| 20--150 | 0.95--0.99 | strong      |
+| > 150   | > 0.99     | very strong |
+
+## Bayes Factor
+
+```{r vot3-bf-priors}
+priors <- c(
+  prior(normal(40, 10), class = Intercept),
+  prior(cauchy(0, 10), class = sigma),
+  prior(normal(10, 10), class = b, coef = "c1_placecoronal"),
+  prior(normal(20, 10), class = b, coef = "c1_placevelar"),
+  prior(normal(0, 25), class = sd),
+  prior(lkj(2), class = cor)
+)
+
+priors_null <- c(
+  prior(normal(40, 10), class = Intercept),
+  prior(cauchy(0, 10), class = sigma),
+  prior(normal(0, 25), class = sd)
+)
+```
+
+```{r vot3-bf, echo=TRUE}
+vot3_bf <- brm(
+  vot ~ 1 + c1_place + (1 + c1_place | speaker),
+  family = gaussian(),
+  prior = priors,
+  data = ita_egg,
+  chains = 4,
+  iter = 20000,
+  file = "./cache/vot3_bf",
+  save_all_pars = TRUE
+)
+
+vot3_bf_null <- brm(
+  vot ~ 1 + c1_place + (1 | speaker),
+  family = gaussian(),
+  prior = priors_null,
+  data = ita_egg,
+  chains = 4,
+  iter = 20000,
+  file = "./cache/vot3_bf_null",
+  save_all_pars = TRUE
+)
+```
+
+## Bayes Factor
+
+```{r bf, echo=TRUE}
+bayes_factor(vot3_bf, vot3_bf_null)
+```
+
+## Sensitivity analysis
