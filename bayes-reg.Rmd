@@ -221,9 +221,11 @@ ggplot() +
 
 ![empirical rule](./img/Empirical_rule_histogram.svg.png){width=250px}
 
-\footnotesize Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
+\tiny Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
 
 ## Italian VOT
+
+\tiny
 
 ```{r mean-prior-2, eval=FALSE, echo=TRUE}
 ggplot() +
@@ -263,6 +265,8 @@ $\sigma \sim HalfCauchy(x_0, \gamma)$
 
 ## Cauchy prior
 
+\tiny
+
 ```{r cauchy-prior, eval=FALSE, echo=TRUE}
 ggplot() +
   aes(x = c(-100, 100)) +
@@ -284,6 +288,8 @@ ggplot() +
 ```
 
 ## Cauchy prior
+
+\tiny
 
 ```{r cauchy-prior-2, eval=FALSE, echo=TRUE}
 ggplot() +
@@ -371,6 +377,8 @@ vot1 <- brm(
 ```
 
 ## Get prior
+
+\tiny
 
 ```{r get-prior, echo=TRUE}
 get_prior(
@@ -461,6 +469,8 @@ vot1 <- brm(
 
 ## Model summary
 
+\tiny
+
 ```{r vot1-sum, echo=TRUE}
 vot1
 ```
@@ -507,6 +517,8 @@ $\sigma \sim HalfCauchy(0, 10)$
 
 ## Adding predictors
 
+\tiny
+
 ```{r get-prior-2, echo=TRUE}
 get_prior(
   vot ~ 1 + c1_place,
@@ -516,6 +528,8 @@ get_prior(
 ```
 
 ## Adding predictors
+
+\tiny
 
 ```{r set-prior-2, echo=TRUE}
 priors <- c(
@@ -542,7 +556,7 @@ vot2 <- brm(
 
 ## Random effects
 
-\centering \small
+\centering \scriptsize
 
 $vot_i \sim Normal(\mu_i, \sigma)$
 
@@ -553,6 +567,10 @@ $$\begin{bmatrix}
 \beta_{1speaker[i]}\\
 \beta_{2speaker[i]}
 \end{bmatrix} \sim MVNormal(\begin{bmatrix}0\\0\\0\end{bmatrix}, S)$$
+
+## Random effects
+
+\centering \scriptsize
 
 $\alpha \sim Normal(25, 10)$
 
@@ -574,6 +592,8 @@ $\sigma \sim HalfCauchy(0, 10)$
 
 ## Random effects
 
+\tiny
+
 ```{r get-prior-3, echo=TRUE}
 get_prior(
   vot ~ 1 + c1_place + (1 + c1_place | speaker),
@@ -583,6 +603,8 @@ get_prior(
 ```
 
 ## Random effects
+
+\tiny
 
 ```{r set-prior-3, echo=TRUE}
 priors <- c(
@@ -617,8 +639,18 @@ plot(vot3)
 
 ## Random effects
 
+\tiny
+
 ```{r vot3-sum, echo=TRUE}
-vot3
+cat(capture.output(summary(vot3))[1:16], sep = "\n")
+```
+
+## Random effects
+
+\tiny
+
+```{r vot3-sum-2, echo=TRUE}
+cat(capture.output(summary(vot3))[18:30], sep = "\n")
 ```
 
 ## Binomial logistic regression
