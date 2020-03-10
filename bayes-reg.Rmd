@@ -384,7 +384,7 @@ get_prior(
 
 ```{r vot1-priors, echo=TRUE}
 nsim <- 1000
-nobs <- 100
+nobs <- 1000
 
 y <- matrix(rep(NA, nsim * nobs), ncol = nobs)
 
