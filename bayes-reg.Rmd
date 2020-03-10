@@ -634,7 +634,14 @@ vot3 <- brm(
 ## Random effects
 
 ```{r vot3-plot}
-plot(vot3)
+a <- plot(vot3, ask = FALSE, plot = FALSE)
+a[[1]]
+```
+
+## Random effects
+
+```{r vot3-plot-2}
+a[[2]]
 ```
 
 ## Random effects
