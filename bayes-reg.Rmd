@@ -398,7 +398,7 @@ for (i in 1:nsim) {
 
 ## Prior predictive checks
 
-```{r vot1-priors-plot, eval=FALSE, echo=FALSE}
+```{r vot1-priors-plot, eval=FALSE, echo=TRUE}
 rand_sample <- sample(1:nsim, 9, replace = FALSE)
 plots <- list()
 
