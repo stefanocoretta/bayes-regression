@@ -22,6 +22,7 @@ header-includes:
 knitr::opts_chunk$set(echo = FALSE)
 library(tidyverse)
 theme_set(theme_minimal())
+library(patchwork)
 library(brms)
 options(mc.cores = parallel::detectCores())
 library(extraDistr)
@@ -186,21 +187,69 @@ MODEL FITTING
 
 ## Italian VOT
 
+* Voice Onset Time (VOT): Time difference (ms) between the release of a stop and the onset of voicing (vocal fold vibration).
+* Toy study of Italian VOT in stops.
+
+$$ vot_i \sim Normal(\mu, \sigma) $$
+
+## Italian VOT
+
 * Previous literature on VOT in Italian \citep{esposito2002, stevens2010a} report VOT values for voiceless stops in the range of 20--60 ms.
-  * We can express this knowledge with the prior $Normal(40, 10)$.
+* We can include our knowledge with a prior for $\mu$.
+  * $Normal(40, 10)$.
   * This is a somewhat strongly informative prior.
 
 ## Italian VOT
 
-```{r mean-prior}
-plot(-30:110, dnorm(-30:110, 40, 10), type = "l", main = "Normal(40, 10)", xlab = "", ylab = "")
+```{r mean-prior, eval=FALSE, echo=TRUE}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
 ```
 
 ## Italian VOT
 
-```{r mean-prior-2}
-plot(-30:110, dnorm(-30:110, 40, 20), type = "l", main = "Normal(40, 20)", xlab = "", ylab = "")
+```{r mean-prior-p}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
 ```
+
+## Normal prior
+
+![empirical rule](./img/Empirical_rule_histogram.svg.png){width=250px}
+
+\footnotesize Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
+
+## Italian VOT
+
+```{r mean-prior-2, eval=FALSE, echo=TRUE}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
+```
+
+## Italian VOT
+
+```{r mean-prior-2-p}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
+```
+
+## Italian VOT
+
+\centering \Large
+
+$vot_i \sim Normal(\mu, \sigma)$
+
+$\mu \sim Normal(40, 10)$
+
+What about $\sigma$?
 
 ## Italian VOT
 
@@ -214,18 +263,48 @@ $\sigma \sim HalfCauchy(x_0, \gamma)$
 
 ## Cauchy prior
 
-```{r cauchy-prior}
-plot(seq(-100, 100, by = 0.1), dcauchy(seq(-100, 100, by = 0.1), 0, 10), type = "l", main = "Cauchy", xlab = "", ylab = "")
-lines(seq(-100, 100, by = 0.1), dcauchy(seq(-100, 100, by = 0.1), 0, 20), type = "l")
-lines(seq(-100, 100, by = 0.1), dcauchy(seq(-100, 100, by = 0.1), 0, 30), type = "l")
+```{r cauchy-prior, eval=FALSE, echo=TRUE}
+ggplot() +
+  aes(x = c(-100, 100)) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#1b9e77", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 20), colour = "#d95f02", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 30), colour = "#7570b3", size = 1) +
+  labs(title = "Cauchy distribution")
 ```
 
 ## Cauchy prior
 
-```{r cauchy-prior-2}
-plot(seq(0, 100, by = 0.1), dcauchy(seq(0, 100, by = 0.1), 0, 10), type = "l", main = "HalfCauchy", xlab = "", ylab = "")
-lines(seq(0, 100, by = 0.1), dcauchy(seq(0, 100, by = 0.1), 0, 20), type = "l")
-lines(seq(0, 100, by = 0.1), dcauchy(seq(0, 100, by = 0.1), 0, 30), type = "l")
+```{r cauchy-prior-p}
+ggplot() +
+  aes(x = c(-100, 100)) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#1b9e77", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 20), colour = "#d95f02", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 30), colour = "#7570b3", size = 1) +
+  labs(title = "Cauchy distribution")
+```
+
+## Cauchy prior
+
+```{r cauchy-prior-2, eval=FALSE, echo=TRUE}
+ggplot() +
+  aes(x = c(-100, 100)) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#1b9e77", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 20), colour = "#d95f02", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 30), colour = "#7570b3", size = 1) +
+  labs(title = "Half Cauchy distribution") +
+  xlim(0, 100)
+```
+
+## Cauchy prior
+
+```{r cauchy-prior-2-p}
+ggplot() +
+  aes(x = c(-100, 100)) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#1b9e77", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 20), colour = "#d95f02", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 30), colour = "#7570b3", size = 1) +
+  labs(title = "Half Cauchy distribution") +
+  xlim(0, 100)
 ```
 
 ## Italian VOT
@@ -248,13 +327,18 @@ $\sigma \sim HalfCauchy(0, 10)$
 ## brms
 
 * Stan \citep{stan-development-team2017}.
-  * Statistical programming language written in C++ for fitting Bayesian models (calculate posterior distributions).
-  * Calculation can be complex and/or impossible, so we take many samples from the data and from the possible parameter values to find the posterior distributions of the hyperparameters.
+  * Statistical programming language written in C++.
+  * Fit Bayesian models (calculate posterior distributions).
+* Calculation can be complex and/or impossible, so we take many samples from the data and from the possible parameter values to find the posterior distributions of the hyperparameters.
   * Markov Chain Monte Carlo (MCMC) sampling using the No-U-Turn sampler (NUTS).
-* brms is an interface between R and Stan.
+
+## brms
+
+* brms translates R code into Stan code.
+* Stan code is run in Stan via Rstan, an R interface to Stan.
 * `brm()` function from brms.
   * lme4 syntax (`y ~ x + (1|w)`).
-  * Creates a Stan model, which is compiled and run.
+  * Creates a Stan model, which is compiled (in C++) and run.
 
 ## brms
 
@@ -296,15 +380,6 @@ get_prior(
 )
 ```
 
-## Set prior
-
-```{r set-prior}
-priors <- c(
-  prior(normal(40, 10), class = Intercept),
-  prior(cauchy(0, 10), class = sigma)
-)
-```
-
 ## Prior predictive checks
 
 ```{r vot1-priors, echo=TRUE}
@@ -323,17 +398,52 @@ for (i in 1:nsim) {
 
 ## Prior predictive checks
 
-```{r vot1-priors-plot, echo=TRUE}
-op <- par(mfrow = c(3, 3))
-rand_sample <- sample(1:nsim, 9)
+```{r vot1-priors-plot, eval=FALSE, echo=FALSE}
+rand_sample <- sample(1:nsim, 9, replace = FALSE)
+plots <- list()
+
+j = 1
 
 for (i in rand_sample) {
-  plot(density(y[i,]), main = "")
+  my_data <- enframe(y[i,], name = NULL)
+  plots[[j]] <- ggplot(data = my_data) +
+    aes(x = value) +
+    geom_density() +
+    labs(x = element_blank(), y = element_blank())
+  j = j + 1
 }
 
-par(op)
+wrap_plots(plots, nrow = 3)
 ```
 
+## Prior predictive checks
+
+```{r vot1-priors-plot-p}
+rand_sample <- sample(1:nsim, 9, replace = FALSE)
+plots <- list()
+
+j = 1
+
+for (i in rand_sample) {
+  my_data <- enframe(y[i,], name = NULL)
+  plots[[j]] <- ggplot(data = my_data) +
+    aes(x = value) +
+    geom_density() +
+    labs(x = element_blank(), y = element_blank())
+  j = j + 1
+}
+
+wrap_plots(plots, nrow = 3)
+```
+
+## Set prior
+
+```{r set-prior, echo=TRUE}
+priors <- c(
+  prior(normal(40, 10), class = Intercept),
+  prior(cauchy(0, 10), class = sigma)
+)
+```
 
 ## Run the model
 
