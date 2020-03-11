@@ -797,7 +797,9 @@ $BF_{12} = \mathcal{L}(H_1) / \mathcal{L}(H_2)$
 
 ## Bayes Factor
 
-```{r vot3-bf-priors}
+\tiny
+
+```{r vot3-bf-priors, echo=TRUE}
 priors <- c(
   prior(normal(40, 10), class = Intercept),
   prior(cauchy(0, 10), class = sigma),
@@ -806,13 +808,9 @@ priors <- c(
   prior(normal(0, 25), class = sd),
   prior(lkj(2), class = cor)
 )
-
-priors_null <- c(
-  prior(normal(40, 10), class = Intercept),
-  prior(cauchy(0, 10), class = sigma),
-  prior(normal(0, 25), class = sd)
-)
 ```
+
+## Bayes Factor
 
 ```{r vot3-bf, echo=TRUE}
 vot3_bf <- brm(
@@ -825,7 +823,21 @@ vot3_bf <- brm(
   file = "./cache/vot3_bf",
   save_all_pars = TRUE
 )
+```
 
+## Bayes Factor
+
+```{r vot3-bf-null-priors, echo=TRUE}
+priors_null <- c(
+  prior(normal(40, 10), class = Intercept),
+  prior(cauchy(0, 10), class = sigma),
+  prior(normal(0, 25), class = sd)
+)
+```
+
+## Bayes Factor
+
+```{r vot3-bf-null, echo=TRUE}
 vot3_bf_null <- brm(
   vot ~ 1 + c1_place + (1 | speaker),
   family = gaussian(),
@@ -840,8 +852,16 @@ vot3_bf_null <- brm(
 
 ## Bayes Factor
 
-```{r bf, echo=TRUE, eval=FALSE}
-bayes_factor(vot3_bf, vot3_bf_null)
+```{r bf, echo=TRUE, cache=TRUE, dependson=c("vot3-bf-priors", "vot3-bf", "vot3-bf-null-priors", "vot3-bf-null")}
+bf <- bayes_factor(vot3_bf, vot3_bf_null)
+```
+
+## Bayes Factor
+
+\tiny
+
+```{r bf-2, echo=TRUE}
+bf
 ```
 
 ## Sensitivity analysis
