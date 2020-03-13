@@ -477,13 +477,13 @@ vot1
 
 ## Plot model
 
-```{r vot1-plot, echo=TRUE}
+```{r vot1-plot, echo=TRUE, fig.width=7, fig.height=4}
 plot(vot1)
 ```
 
 ## Posterior predictive check
 
-```{r vot1-pp, echo=TRUE}
+```{r vot1-pp, echo=TRUE, fig.width=7, fig.height=4}
 pp_check(vot1, nsamples = 100)
 ```
 
@@ -648,7 +648,7 @@ a[[2]]
 
 \tiny
 
-```{r vot3-sum, echo=TRUE}
+```{r vot3-sum}
 cat(capture.output(summary(vot3))[1:16], sep = "\n")
 ```
 
@@ -656,7 +656,7 @@ cat(capture.output(summary(vot3))[1:16], sep = "\n")
 
 \tiny
 
-```{r vot3-sum-2, echo=TRUE}
+```{r vot3-sum-2}
 cat(capture.output(summary(vot3))[18:30], sep = "\n")
 ```
 
