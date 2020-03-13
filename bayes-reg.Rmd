@@ -25,6 +25,7 @@ theme_set(theme_minimal())
 library(patchwork)
 library(brms)
 options(mc.cores = parallel::detectCores())
+library(bayesplot)
 library(extraDistr)
 library(coretta2018itaegg)
 data("ita_egg")
@@ -554,6 +555,26 @@ vot2 <- brm(
 )
 ```
 
+## Adding predictors
+
+\tiny
+
+```{r vot-sum}
+vot2
+```
+
+## Adding predictors
+
+```{r vot2-areas, echo=TRUE, warning=FALSE, fig.width=7, fig.height=4}
+mcmc_areas(vot2, regex_pars = "b_", prob = 0.95)
+```
+
+## Adding predictors
+
+```{r vot2-cond, echp=TRUE}
+conditional_effects(vot2)
+```
+
 ## Random effects
 
 \centering \scriptsize
@@ -660,7 +681,19 @@ cat(capture.output(summary(vot3))[1:16], sep = "\n")
 cat(capture.output(summary(vot3))[18:30], sep = "\n")
 ```
 
-## Binomial logistic regression
+## Random effects
+
+```{r vot3-areas, echo=TRUE, warning=FALSE, fig.width=7, fig.height=4}
+mcmc_areas(vot3, regex_pars = "b_", prob = 0.95)
+```
+
+## Random effects
+
+```{r vot3-cond, echp=TRUE}
+conditional_effects(vot3)
+```
+
+<!-- ## Binomial logistic regression
 
 ```{r set-prior-burst, echo=TRUE}
 priors <- c(
@@ -692,6 +725,7 @@ burst1 <- brm(
 ```{r plot-cond-burst, echo=TRUE}
 conditional_effects(burst1, effects = "burst:vowel")
 ```
+-->
 
 ## 
 
