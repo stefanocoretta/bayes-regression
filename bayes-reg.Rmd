@@ -288,7 +288,7 @@ ggplot() +
   labs(title = "Cauchy distribution")
 ```
 
-## Cauchy prior
+## Half Cauchy prior
 
 \tiny
 
@@ -301,7 +301,7 @@ ggplot() +
   labs(title = "Half Cauchy distribution")
 ```
 
-## Cauchy prior
+## Half Cauchy prior
 
 ```{r cauchy-prior-2-p}
 ggplot() +
@@ -310,6 +310,15 @@ ggplot() +
   stat_function(fun = dhcauchy, n = 201, args = list(10), colour = "#d95f02", size = 1) +
   stat_function(fun = dhcauchy, n = 201, args = list(15), colour = "#7570b3", size = 1) +
   labs(title = "Half Cauchy distribution")
+```
+
+## Half cauchy prior
+
+```{r cauchy-2-hdi, echo=TRUE}
+library(HDInterval)
+inverseCDF(c(0.025, 0.975), phcauchy, 5)
+inverseCDF(c(0.025, 0.975), phcauchy, 10)
+inverseCDF(c(0.025, 0.975), phcauchy, 15)
 ```
 
 ## Italian VOT
