@@ -271,9 +271,9 @@ $\sigma \sim HalfCauchy(x_0, \gamma)$
 ```{r cauchy-prior, eval=FALSE, echo=TRUE}
 ggplot() +
   aes(x = c(-100, 100)) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#1b9e77", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 20), colour = "#d95f02", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 30), colour = "#7570b3", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 5), colour = "#1b9e77", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#d95f02", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 15), colour = "#7570b3", size = 1) +
   labs(title = "Cauchy distribution")
 ```
 
@@ -282,9 +282,9 @@ ggplot() +
 ```{r cauchy-prior-p}
 ggplot() +
   aes(x = c(-100, 100)) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#1b9e77", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 20), colour = "#d95f02", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 30), colour = "#7570b3", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 5), colour = "#1b9e77", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#d95f02", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 15), colour = "#7570b3", size = 1) +
   labs(title = "Cauchy distribution")
 ```
 
@@ -294,24 +294,22 @@ ggplot() +
 
 ```{r cauchy-prior-2, eval=FALSE, echo=TRUE}
 ggplot() +
-  aes(x = c(-100, 100)) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#1b9e77", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 20), colour = "#d95f02", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 30), colour = "#7570b3", size = 1) +
-  labs(title = "Half Cauchy distribution") +
-  xlim(0, 100)
+  aes(x = c(0, 100)) +
+  stat_function(fun = dhcauchy, n = 201, args = list(5), colour = "#1b9e77", size = 1) +
+  stat_function(fun = dhcauchy, n = 201, args = list(10), colour = "#d95f02", size = 1) +
+  stat_function(fun = dhcauchy, n = 201, args = list(15), colour = "#7570b3", size = 1) +
+  labs(title = "Half Cauchy distribution")
 ```
 
 ## Cauchy prior
 
 ```{r cauchy-prior-2-p}
 ggplot() +
-  aes(x = c(-100, 100)) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#1b9e77", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 20), colour = "#d95f02", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 30), colour = "#7570b3", size = 1) +
-  labs(title = "Half Cauchy distribution") +
-  xlim(0, 100)
+  aes(x = c(0, 100)) +
+  stat_function(fun = dhcauchy, n = 201, args = list(5), colour = "#1b9e77", size = 1) +
+  stat_function(fun = dhcauchy, n = 201, args = list(10), colour = "#d95f02", size = 1) +
+  stat_function(fun = dhcauchy, n = 201, args = list(15), colour = "#7570b3", size = 1) +
+  labs(title = "Half Cauchy distribution")
 ```
 
 ## Italian VOT
