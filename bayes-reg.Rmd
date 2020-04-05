@@ -57,24 +57,17 @@ burst <- filter(pilot, condition == "burst")
 voicing <- filter(pilot, condition == "voicing")
 ```
 
-## Installation
-
-Safe method:
-
-* **Install Rstan first**: https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started (see *Installation of Rstan*, *Checking the C++ Toolchain*, and *Configuration of the C++ Toolchain*).
-  * Note that details in *Checking the C++ Toolchain* differ depending on your OS.
-* **Install brms**: https://github.com/paul-buerkner/brms#how-do-i-install-brms.
-
 ## Road map
 
-* Basic concepts
-* Model fitting with brms
-* Bayesian inference
-* BYOD clinic
+1. Basic concepts.
+1. Choosing priors.
+1. Model fitting with brms.
+1. Bayesian inference.
 
 ## Learning outcomes
 
-* Understand the basic concepts behind Bayesian statistics and how this differs from frequentist statistics.
+* Understand the basic concepts behind Bayesian statistics and how it differs from frequentist statistics.
+* Understand priors and how to choose them.
 * Be able to set up and fit a Bayesian linear regression model using brms.
 * Understand Bayesian inference methods.
 
@@ -153,11 +146,11 @@ $$ posterior\ probability = \frac{likelihood \times prior}{marginal\ likelihood}
 * We can incorporate previous knowledge (belief) about the parameters using **priors** (*prior probability distributions*).
   * We specify the hyperparameters $\mu_1$, $\sigma_1$, $x_0$, $\gamma$ of the prior probability distributions.
 * Priors are chosen based on expert knowledge, previous studies, pilot data...
-  * Priors must **not** be chosen based on the data to be analysed.
+  * Priors must **not** be chosen based on inspection of the data to be analysed.
 
 ## Bayesian belief update
 
-\Huge
+\large
 
 $$ prior\ probability\times evidence\ (data) = posterior\ probability $$
 
@@ -184,7 +177,7 @@ Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (
 
 \centering \Huge
 
-MODEL FITTING
+CHOOSING PRIORS
 
 ## Italian VOT
 
@@ -201,6 +194,8 @@ $$ vot_i \sim Normal(\mu, \sigma) $$
   * This is a somewhat strongly informative prior.
 
 ## Italian VOT
+
+\tiny
 
 ```{r mean-prior, eval=FALSE, echo=TRUE}
 ggplot() +
@@ -331,12 +326,26 @@ $\mu \sim Normal(40, 10)$
 
 $\sigma \sim HalfCauchy(0, 10)$
 
+##
+
+\centering \Huge
+
+MODEL FITTING
+
 ## Italian VOT
 
 * We have a model which incorporates (some of) our knowledge about VOT (through the priors for $\mu$ and $\sigma$).
 * Now we want to obtain the **posterior distributions** of $\mu$ and $\sigma$.
   * The posterior distribution is the prior distribution *conditioned* on the data.
 * **brms** R package: Bayesian Regression Models using Stan \citep{burkner2018}.
+
+## Installation
+
+Safe method:
+
+* **Install Rstan first**: https://github.com/stan-dev/rstan/wiki/RStan-Getting-Started (see *Installation of Rstan*, *Checking the C++ Toolchain*, and *Configuration of the C++ Toolchain*).
+  * Note that details in *Checking the C++ Toolchain* differ depending on your OS.
+* **Install brms**: https://github.com/paul-buerkner/brms#how-do-i-install-brms.
 
 ## brms
 
