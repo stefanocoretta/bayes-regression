@@ -62,6 +62,9 @@ voicing <- filter(pilot, condition == "voicing")
 1. Basic concepts.
 1. Choosing priors.
 1. Model fitting with brms.
+  1. Normal.
+  1. Log-normal.
+  1. Binomial (Bernoulli).
 1. Bayesian inference.
 
 ## Learning outcomes
@@ -114,7 +117,7 @@ BASIC CONCEPTS
 
 \centering \Huge
 
-$vot_i \sim Normal(\mu, \sigma)$
+$y_i \sim Normal(\mu, \sigma)$
 
 ## Continous random variable
 
@@ -125,7 +128,7 @@ $vot_i \sim Normal(\mu, \sigma)$
 
 \centering \Huge
 
-$vot_i \sim Normal(\mu, \sigma)$
+$y_i \sim Normal(\mu, \sigma)$
 
 $\mu \sim Normal(\mu_1, \sigma_1)$
 
@@ -152,11 +155,11 @@ $$ posterior\ probability = \frac{likelihood \times prior}{marginal\ likelihood}
 
 \large
 
-$$ prior\ probability\times evidence\ (data) = posterior\ probability $$
+$$ prior \times evidence \\ = \\ posterior $$
 
 ## Bayesian belief update
 
-https://nanx.shinyapps.io/conjugate-normal-umkv/
+<https://nanx.shinyapps.io/conjugate-normal-umkv/>
 
 <!-- ## Priors
 
