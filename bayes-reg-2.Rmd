@@ -1,0 +1,395 @@
+---
+title: "Introduction to Bayesian linear regression with brms"
+author: "Stefano Coretta"
+date: "18/01/2020"
+output:
+  beamer_presentation:
+    citation_package: natbib
+    highlight: tango
+    latex_engine: xelatex
+    fig_caption: false
+fontsize: 12pt
+bibliography: linguistics.bib
+biblio-style: unified.bst
+header-includes:
+- \usepackage{graphicx}
+- \frenchspacing
+- \usepackage{cleveref}
+- \usetheme{metropolis}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+theme_set(theme_minimal())
+library(patchwork)
+library(brms)
+options(mc.cores = parallel::detectCores())
+library(bayesplot)
+library(extraDistr)
+library(coretta2018itaegg)
+data("ita_egg")
+ita_egg <- drop_na(ita_egg, vot)
+```
+
+```{r read-bernoulli-data, message=FALSE, warning=FALSE}
+pilot <- list.files(
+  path = "./data/perceptual/",
+  pattern = "*.csv",
+  full.names = TRUE
+) %>%
+  map_df(~read_csv(., col_types = cols(.default = "c"))) %>%
+  mutate(
+    key_resp_2.keys = ifelse(key_resp_2.keys == "z", "d", "t"),
+    key_resp_8.keys = ifelse(key_resp_8.keys == "z", "t", "d"),
+    response = coalesce(key_resp_2.keys, key_resp_8.keys),
+    response = factor(response, levels = c("t", "d")),
+    burst = as.numeric(burst),
+    voicing = as.numeric(voicing),
+    response_n = as.numeric(response) - 1,
+    vowel = factor(vowel, levels = c("a", "i", "u"))
+  ) %>%
+  filter(!is.na(response))
+
+contrasts(pilot$vowel) <- "contr.sum"
+
+burst <- filter(pilot, condition == "burst")
+voicing <- filter(pilot, condition == "voicing")
+```
+
+## Road map
+
+1. Basic concepts.
+1. Choosing priors.
+1. Model fitting with brms.
+  1. Normal.
+  1. Log-normal.
+  1. Binomial (Bernoulli).
+1. Bayesian inference.
+
+## Learning outcomes
+
+* Understand the basic concepts behind Bayesian statistics and how it differs from frequentist statistics.
+* Understand priors and how to choose them.
+* Be able to set up and fit a Bayesian linear regression model using brms.
+* Understand Bayesian inference methods.
+
+## Adding predictors
+
+$vot_i \sim Normal(\mu_i, \sigma)$
+
+$\mu_i = \alpha + \beta_1 \times coronal_i + \beta_2 \times velar_i$
+
+$\alpha \sim Normal(\mu_1, \sigma_1)$
+
+$\beta_1 \sim Normal(\mu_2, \sigma_2)$
+
+$\beta_2 \sim Normal(\mu_3, \sigma_3)$
+
+$\sigma \sim HalfCauchy(x_0, \gamma)$
+
+## Adding predictors
+
+$vot_i \sim Normal(\mu_i, \sigma)$
+
+$\mu_i = \alpha + \beta_1 \times coronal_i + \beta_2 \times velar_i$
+
+$\alpha \sim Normal(25, 10)$
+
+$\beta_1 \sim Normal(10, 10)$
+
+$\beta_2 \sim Normal(20, 10)$
+
+$\sigma \sim HalfCauchy(0, 10)$
+
+## Adding predictors
+
+\tiny
+
+```{r get-prior-2, echo=TRUE}
+get_prior(
+  vot ~ 1 + c1_place,
+  family = gaussian(),
+  data = ita_egg
+)
+```
+
+## Adding predictors
+
+\tiny
+
+```{r set-prior-2, echo=TRUE}
+priors <- c(
+  prior(normal(25, 10), class = Intercept),
+  prior(cauchy(0, 10), class = sigma),
+  prior(normal(10, 10), class = b, coef = "c1_placecoronal"),
+  prior(normal(20, 10), class = b, coef = "c1_placevelar")
+)
+```
+
+## Adding predictors
+
+```{r vot2, echo=TRUE}
+vot2 <- brm(
+  vot ~ 1 + c1_place,
+  family = gaussian(),
+  prior = priors,
+  data = ita_egg,
+  chains = 4,
+  iter = 2000,
+  file = "./cache/vot2"
+)
+```
+
+## Adding predictors
+
+\tiny
+
+```{r vot-sum}
+vot2
+```
+
+## Adding predictors
+
+```{r vot2-areas, echo=TRUE, warning=FALSE, fig.width=7, fig.height=4}
+mcmc_areas(vot2, regex_pars = "b_", prob = 0.95)
+```
+
+## Adding predictors
+
+```{r vot2-cond, echp=TRUE}
+conditional_effects(vot2)
+```
+
+## Random effects
+
+\centering \scriptsize
+
+$vot_i \sim Normal(\mu_i, \sigma)$
+
+$\mu_i = \alpha + \alpha_{speaker[i]} + (\beta_1 + \beta_{1speaker[i]}) \times coronal_i + (\beta_2 + \beta_{2speaker[i]}) \times velar_i$
+
+$$\begin{bmatrix}
+\alpha_{speaker}\\
+\beta_{1speaker[i]}\\
+\beta_{2speaker[i]}
+\end{bmatrix} \sim MVNormal(\begin{bmatrix}0\\0\\0\end{bmatrix}, S)$$
+
+## Random effects
+
+\centering \scriptsize
+
+$\alpha \sim Normal(25, 10)$
+
+$\alpha_{speaker} \sim Normal(0, \sigma_{speaker})$
+
+$\beta_1 \sim Normal(10, 10)$
+
+$\beta_2 \sim Normal(20, 10)$
+
+$\sigma_{\alpha{speaker}} \sim Normal(0, \sigma_{speaker})$
+
+$\sigma_{\beta{1speaker}} \sim HalfCauchy(0, 10)$
+
+$\sigma_{\beta{2speaker}} \sim HalfCauchy(0, 10)$
+
+$\sigma_{speaker} \sim HalfCauchy(0, 10)$
+
+$\sigma \sim HalfCauchy(0, 10)$
+
+## Random effects
+
+\tiny
+
+```{r get-prior-3, echo=TRUE}
+get_prior(
+  vot ~ 1 + c1_place + (1 + c1_place | speaker),
+  family = gaussian(),
+  data = ita_egg
+)
+```
+
+## Random effects
+
+\tiny
+
+```{r set-prior-3, echo=TRUE}
+priors <- c(
+  prior(normal(40, 10), class = Intercept),
+  prior(cauchy(0, 10), class = sigma),
+  prior(normal(10, 10), class = b, coef = "c1_placecoronal"),
+  prior(normal(20, 10), class = b, coef = "c1_placevelar"),
+  prior(normal(0, 25), class = sd),
+  prior(lkj(2), class = cor)
+)
+```
+
+## Random effects
+
+```{r vot3, echo=TRUE}
+vot3 <- brm(
+  vot ~ 1 + c1_place + (1 + c1_place | speaker),
+  family = gaussian(),
+  prior = priors,
+  data = ita_egg,
+  chains = 4,
+  iter = 2000,
+  file = "./cache/vot3"
+)
+```
+
+## Random effects
+
+```{r vot3-plot}
+a <- plot(vot3, ask = FALSE, plot = FALSE)
+a[[1]]
+```
+
+## Random effects
+
+```{r vot3-plot-2}
+a[[2]]
+```
+
+## Random effects
+
+\tiny
+
+```{r vot3-sum}
+cat(capture.output(summary(vot3))[1:16], sep = "\n")
+```
+
+## Random effects
+
+\tiny
+
+```{r vot3-sum-2}
+cat(capture.output(summary(vot3))[18:30], sep = "\n")
+```
+
+## Random effects
+
+```{r vot3-areas, echo=TRUE, warning=FALSE, fig.width=7, fig.height=4}
+mcmc_areas(vot3, regex_pars = "b_", prob = 0.95)
+```
+
+## Random effects
+
+```{r vot3-cond, echp=TRUE}
+conditional_effects(vot3)
+```
+
+## Italian VOT
+
+* Voice Onset Time (VOT): Time difference (ms) between the release of a stop and the onset of voicing (vocal fold vibration).
+* Toy study of Italian VOT in stops.
+
+$$ vot_i \sim Normal(\mu, \sigma) $$
+
+## Italian VOT
+
+* Previous literature on VOT in Italian \citep{esposito2002, stevens2010a} report VOT values for voiceless stops in the range of 20--60 ms.
+* We can include our knowledge with a prior for $\mu$.
+  * $Normal(40, 10)$.
+  * This is a somewhat strongly informative prior.
+
+## Italian VOT
+
+\tiny
+
+```{r mean-prior, eval=FALSE, echo=TRUE}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
+```
+
+## Italian VOT
+
+```{r mean-prior-p}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
+```
+
+## Normal prior
+
+![empirical rule](./img/Empirical_rule_histogram.svg.png){width=250px}
+
+\tiny Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
+
+## Italian VOT
+
+\tiny
+
+```{r mean-prior-2, eval=FALSE, echo=TRUE}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
+```
+
+## Italian VOT
+
+```{r mean-prior-2-p}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
+```
+
+## Italian VOT
+
+\centering \Large
+
+$vot_i \sim Normal(\mu, \sigma)$
+
+$\mu \sim Normal(40, 10)$
+
+What about $\sigma$?
+
+## Italian VOT
+
+\centering \Large
+
+$vot_i \sim Normal(\mu, \sigma)$
+
+$\mu \sim Normal(40, 10)$
+
+$\sigma \sim HalfCauchy(x_0, \gamma)$
+
+<!-- ## Binomial logistic regression
+
+```{r set-prior-burst, echo=TRUE}
+priors <- c(
+  prior(student_t(3, 0, 2), class = Intercept),
+  prior(student_t(3, 0, 2), class = b),
+  prior(cauchy(0, 1), class = sd),
+  prior(lkj(2), class = cor)
+)
+```
+
+## Binomial logistic regression
+
+```{r burst, echo=TRUE}
+burst1 <- brm(
+  response_n ~
+    burst *
+    vowel +
+    (1+burst|participant),
+  data = burst,
+  prior = priors,
+  family = bernoulli,
+  file = "./cache/burst1",
+  control = list(adapt_delta = 0.999)
+)
+```
+
+## Binomial logistic regression
+
+```{r plot-cond-burst, echo=TRUE}
+conditional_effects(burst1, effects = "burst:vowel")
+```
+-->
+
