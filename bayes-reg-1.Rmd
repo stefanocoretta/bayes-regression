@@ -143,6 +143,52 @@ $$ prior \times evidence \\ = \\ posterior $$
 
 CHOOSING PRIORS
 
+## Italian F1
+
+* Toy example with F1.
+* Data:
+  * Italian.
+  * 7 speakers.
+  * CVCV words in frame sentence.
+    * C1 = /p/.
+    * V1 = V2 = /a, o, u/.
+    * C2 = /t, d, k, g/.
+
+## Italian F1
+
+Formant values are roughly distributed according to a normal (Gaussian) distribution.
+
+$$ \textit{F1}_i \sim Normal(\mu, \sigma) $$
+
+## Normal (Gaussian) distribution
+
+```{r standard-normal}
+ggplot() +
+  aes(x = c(-4, 4)) +
+  stat_function(fun = dnorm, n = 101, args = list(0, 1)) +
+  labs(
+    title = "Standard normal (Gaussian) distribution",
+    subtitle = "mean = 0, SD = 1",
+    x = element_blank(), y = element_blank()
+  )
+```
+
+## Normal (Gaussian) distribution
+
+\centering
+
+![empirical rule](./img/Empirical_rule_histogram.svg.png){width=250px}
+
+\tiny Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
+
+
+## Italian F1
+
+* $\textit{F1}_i \sim Normal(\mu, \sigma)$ has two parameters, $\mu$ and $\sigma$.
+* $\mu$ and $\sigma$ are random variables (unkown and uncertain).
+* We express these parameters as probability distributions (with hyperparameters).
+  * The probability distributions of the parameters are the **priors**.
+
 ## Priors
 
 * Informative and weakly informative priors.
@@ -150,57 +196,57 @@ CHOOSING PRIORS
   * Uniform distribution.
 * Regularising priors.
 
+\centering \Large
+
+$vot_i \sim Normal(\mu, \sigma)$
+
+\normalsize
+
+What prior for $\mu$?
+
 ## Italian F1
 
-* Toy study of Italian F1 in three vowels (/a/, /ɔ/, /u/).
+\centering \Large
 
-$$ \textit{F1}_i \sim Normal(\mu, \sigma) $$
+$vot_i \sim Normal(\mu, \sigma)$
 
-## Italian VOT
+$\mu \sim Normal(\mu_1, \sigma_1)$
+
+## Italian F1
 
 \tiny
 
 ```{r mean-prior, eval=FALSE, echo=TRUE}
 ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
+  aes(x = c(-2000, 2000)) +
+  stat_function(fun = dnorm, n = 101, args = list(0, 500)) +
+  labs(
+    title = expression(paste("Prior for ", mu)),
+    subtitle = expression(paste(mu, " = 0,  ", sigma, " = 500")),
+    x = element_blank(),
+    y = element_blank()
+  )
+```
+
+## Italian F1
+
+```{r mean-prior, eval=FALSE, echo=TRUE}
+ggplot() +
+  aes(x = c(-2000, 2000)) +
+  stat_function(fun = dnorm, n = 101, args = list(0, 500)) +
+  labs(
+    title = expression(paste("Prior for ", mu)),
+    subtitle = expression(paste(mu, " = 0,  ", sigma, " = 500")),
+    x = element_blank(),
+    y = element_blank()
+  )
 ```
 
 ## Italian VOT
 
-```{r mean-prior-p}
-ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
-```
-
-## Normal prior
-
-![empirical rule](./img/Empirical_rule_histogram.svg.png){width=250px}
-
-\tiny Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
-
-## Italian VOT
-
-\tiny
-
-```{r mean-prior-2, eval=FALSE, echo=TRUE}
-ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
-```
-
-## Italian VOT
-
-```{r mean-prior-2-p}
-ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
-```
+* $Normal(0, 500)$ as the prior for $\mu$.
+* This means that we believe $\mu$ to be between -1000 and +1000 at 95% confidence.
+  * 95% credible interval (CI) = $[\mu_1+2\sigma_1, \mu_1-2\sigma_1]$.
 
 ## Italian VOT
 
@@ -208,7 +254,7 @@ ggplot() +
 
 $vot_i \sim Normal(\mu, \sigma)$
 
-$\mu \sim Normal(40, 10)$
+$\mu \sim Normal(0, 500)$
 
 What about $\sigma$?
 
@@ -218,11 +264,11 @@ What about $\sigma$?
 
 $vot_i \sim Normal(\mu, \sigma)$
 
-$\mu \sim Normal(40, 10)$
+$\mu \sim Normal(0, 500)$
 
 $\sigma \sim HalfCauchy(x_0, \gamma)$
 
-## Cauchy prior
+## Cauchy distribution
 
 \tiny
 
@@ -230,33 +276,13 @@ $\sigma \sim HalfCauchy(x_0, \gamma)$
 ggplot() +
   aes(x = c(-100, 100)) +
   stat_function(fun = dcauchy, n = 201, args = list(0, 5), colour = "#1b9e77", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#d95f02", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 15), colour = "#7570b3", size = 1) +
-  labs(title = "Cauchy distribution")
-```
-
-## Cauchy prior
-
-```{r cauchy-prior-p}
-ggplot() +
-  aes(x = c(-100, 100)) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 5), colour = "#1b9e77", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 10), colour = "#d95f02", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 15), colour = "#7570b3", size = 1) +
-  labs(title = "Cauchy distribution")
-```
-
-## Half Cauchy prior
-
-\tiny
-
-```{r cauchy-prior-2, eval=FALSE, echo=TRUE}
-ggplot() +
-  aes(x = c(0, 100)) +
-  stat_function(fun = dhcauchy, n = 201, args = list(5), colour = "#1b9e77", size = 1) +
-  stat_function(fun = dhcauchy, n = 201, args = list(10), colour = "#d95f02", size = 1) +
-  stat_function(fun = dhcauchy, n = 201, args = list(15), colour = "#7570b3", size = 1) +
-  labs(title = "Half Cauchy distribution")
+  stat_function(fun = dcauchy, n = 201, args = list(0, 15), colour = "#d95f02", size = 1) +
+  stat_function(fun = dcauchy, n = 201, args = list(0, 25), colour = "#7570b3", size = 1) +
+  labs(
+    title = "Cauchy distribution",
+    x = element_blank(),
+    y = element_blank()
+  )
 ```
 
 ## Half Cauchy prior
@@ -265,9 +291,13 @@ ggplot() +
 ggplot() +
   aes(x = c(0, 100)) +
   stat_function(fun = dhcauchy, n = 201, args = list(5), colour = "#1b9e77", size = 1) +
-  stat_function(fun = dhcauchy, n = 201, args = list(10), colour = "#d95f02", size = 1) +
-  stat_function(fun = dhcauchy, n = 201, args = list(15), colour = "#7570b3", size = 1) +
-  labs(title = "Half Cauchy distribution")
+  stat_function(fun = dhcauchy, n = 201, args = list(15), colour = "#d95f02", size = 1) +
+  stat_function(fun = dhcauchy, n = 201, args = list(25), colour = "#7570b3", size = 1) +
+  labs(
+    title = "Half Cauchy prior",
+    x = element_blank(),
+    y = element_blank()
+  )
 ```
 
 ## Half cauchy prior
@@ -275,19 +305,19 @@ ggplot() +
 ```{r cauchy-2-hdi, echo=TRUE}
 library(HDInterval)
 inverseCDF(c(0.025, 0.975), phcauchy, 5)
-inverseCDF(c(0.025, 0.975), phcauchy, 10)
 inverseCDF(c(0.025, 0.975), phcauchy, 15)
+inverseCDF(c(0.025, 0.975), phcauchy, 25)
 ```
 
-## Italian VOT
+## Italian F1
 
 \centering \Large
 
 $vot_i \sim Normal(\mu, \sigma)$
 
-$\mu \sim Normal(40, 10)$
+$\mu \sim Normal(0, 500)$
 
-$\sigma \sim HalfCauchy(0, 10)$
+$\sigma \sim HalfCauchy(0, 25)$
 
 ##
 
