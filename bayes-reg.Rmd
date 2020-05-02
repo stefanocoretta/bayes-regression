@@ -182,85 +182,7 @@ Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (
 
 CHOOSING PRIORS
 
-## Italian VOT
 
-* Voice Onset Time (VOT): Time difference (ms) between the release of a stop and the onset of voicing (vocal fold vibration).
-* Toy study of Italian VOT in stops.
-
-$$ vot_i \sim Normal(\mu, \sigma) $$
-
-## Italian VOT
-
-* Previous literature on VOT in Italian \citep{esposito2002, stevens2010a} report VOT values for voiceless stops in the range of 20--60 ms.
-* We can include our knowledge with a prior for $\mu$.
-  * $Normal(40, 10)$.
-  * This is a somewhat strongly informative prior.
-
-## Italian VOT
-
-\tiny
-
-```{r mean-prior, eval=FALSE, echo=TRUE}
-ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
-```
-
-## Italian VOT
-
-```{r mean-prior-p}
-ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
-```
-
-## Normal prior
-
-![empirical rule](./img/Empirical_rule_histogram.svg.png){width=250px}
-
-\tiny Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
-
-## Italian VOT
-
-\tiny
-
-```{r mean-prior-2, eval=FALSE, echo=TRUE}
-ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
-```
-
-## Italian VOT
-
-```{r mean-prior-2-p}
-ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
-```
-
-## Italian VOT
-
-\centering \Large
-
-$vot_i \sim Normal(\mu, \sigma)$
-
-$\mu \sim Normal(40, 10)$
-
-What about $\sigma$?
-
-## Italian VOT
-
-\centering \Large
-
-$vot_i \sim Normal(\mu, \sigma)$
-
-$\mu \sim Normal(40, 10)$
-
-$\sigma \sim HalfCauchy(x_0, \gamma)$
 
 ## Cauchy prior
 
@@ -711,6 +633,86 @@ mcmc_areas(vot3, regex_pars = "b_", prob = 0.95)
 ```{r vot3-cond, echp=TRUE}
 conditional_effects(vot3)
 ```
+
+## Italian VOT
+
+* Voice Onset Time (VOT): Time difference (ms) between the release of a stop and the onset of voicing (vocal fold vibration).
+* Toy study of Italian VOT in stops.
+
+$$ vot_i \sim Normal(\mu, \sigma) $$
+
+## Italian VOT
+
+* Previous literature on VOT in Italian \citep{esposito2002, stevens2010a} report VOT values for voiceless stops in the range of 20--60 ms.
+* We can include our knowledge with a prior for $\mu$.
+  * $Normal(40, 10)$.
+  * This is a somewhat strongly informative prior.
+
+## Italian VOT
+
+\tiny
+
+```{r mean-prior, eval=FALSE, echo=TRUE}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
+```
+
+## Italian VOT
+
+```{r mean-prior-p}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
+```
+
+## Normal prior
+
+![empirical rule](./img/Empirical_rule_histogram.svg.png){width=250px}
+
+\tiny Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
+
+## Italian VOT
+
+\tiny
+
+```{r mean-prior-2, eval=FALSE, echo=TRUE}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
+```
+
+## Italian VOT
+
+```{r mean-prior-2-p}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
+```
+
+## Italian VOT
+
+\centering \Large
+
+$vot_i \sim Normal(\mu, \sigma)$
+
+$\mu \sim Normal(40, 10)$
+
+What about $\sigma$?
+
+## Italian VOT
+
+\centering \Large
+
+$vot_i \sim Normal(\mu, \sigma)$
+
+$\mu \sim Normal(40, 10)$
+
+$\sigma \sim HalfCauchy(x_0, \gamma)$
 
 <!-- ## Binomial logistic regression
 
