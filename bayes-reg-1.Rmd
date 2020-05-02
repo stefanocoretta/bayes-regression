@@ -27,34 +27,10 @@ library(brms)
 options(mc.cores = parallel::detectCores())
 library(bayesplot)
 library(extraDistr)
-library(coretta2018itaegg)
-data("ita_egg")
-ita_egg <- drop_na(ita_egg, vot)
 ```
 
-```{r read-bernoulli-data, message=FALSE, warning=FALSE}
-pilot <- list.files(
-  path = "./data/perceptual/",
-  pattern = "*.csv",
-  full.names = TRUE
-) %>%
-  map_df(~read_csv(., col_types = cols(.default = "c"))) %>%
-  mutate(
-    key_resp_2.keys = ifelse(key_resp_2.keys == "z", "d", "t"),
-    key_resp_8.keys = ifelse(key_resp_8.keys == "z", "t", "d"),
-    response = coalesce(key_resp_2.keys, key_resp_8.keys),
-    response = factor(response, levels = c("t", "d")),
-    burst = as.numeric(burst),
-    voicing = as.numeric(voicing),
-    response_n = as.numeric(response) - 1,
-    vowel = factor(vowel, levels = c("a", "i", "u"))
-  ) %>%
-  filter(!is.na(response))
-
-contrasts(pilot$vowel) <- "contr.sum"
-
-burst <- filter(pilot, condition == "burst")
-voicing <- filter(pilot, condition == "voicing")
+```{r prepare-data}
+f_end <- readRDS("./data/f_end.rds")
 ```
 
 ## Road map
@@ -161,28 +137,90 @@ $$ prior \times evidence \\ = \\ posterior $$
 
 <https://nanx.shinyapps.io/conjugate-normal-umkv/>
 
-<!-- ## Priors
-
-* Informative and weakly informative priors.
-* Uninformative or diffuse priors.
-  * Uniform distribution.
-* Regularising priors.
-
-## Normal prior
-
-![empirical rule](./img/Empirical_rule_histogram.png)
-
-\footnotesize
-
-Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0) -->
-
 ##
 
 \centering \Huge
 
 CHOOSING PRIORS
 
+## Priors
 
+* Informative and weakly informative priors.
+* Uninformative or diffuse priors.
+  * Uniform distribution.
+* Regularising priors.
+
+## Italian F1
+
+* Toy study of Italian F1 in three vowels (/a/, /ɔ/, /u/).
+
+$$ \textit{F1}_i \sim Normal(\mu, \sigma) $$
+
+## Italian VOT
+
+\tiny
+
+```{r mean-prior, eval=FALSE, echo=TRUE}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
+```
+
+## Italian VOT
+
+```{r mean-prior-p}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
+```
+
+## Normal prior
+
+![empirical rule](./img/Empirical_rule_histogram.svg.png){width=250px}
+
+\tiny Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
+
+## Italian VOT
+
+\tiny
+
+```{r mean-prior-2, eval=FALSE, echo=TRUE}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
+```
+
+## Italian VOT
+
+```{r mean-prior-2-p}
+ggplot() +
+  aes(x = c(-30, 110)) +
+  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
+  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
+```
+
+## Italian VOT
+
+\centering \Large
+
+$vot_i \sim Normal(\mu, \sigma)$
+
+$\mu \sim Normal(40, 10)$
+
+What about $\sigma$?
+
+## Italian VOT
+
+\centering \Large
+
+$vot_i \sim Normal(\mu, \sigma)$
+
+$\mu \sim Normal(40, 10)$
+
+$\sigma \sim HalfCauchy(x_0, \gamma)$
 
 ## Cauchy prior
 
