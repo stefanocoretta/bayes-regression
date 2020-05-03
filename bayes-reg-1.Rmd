@@ -25,6 +25,7 @@ theme_set(theme_minimal())
 library(patchwork)
 library(brms)
 options(mc.cores = parallel::detectCores())
+rstan::rstan_options(auto_write = TRUE)
 library(bayesplot)
 library(extraDistr)
 ```
@@ -79,6 +80,12 @@ BASIC CONCEPTS
   * $Binomial(n, p)$,
   * $Poisson(\lambda)$
 
+## Continuous random variables
+
+\centering \Huge
+
+$y_i \sim Normal(\mu, \sigma)$
+
 ## Frequentist vs Bayesian view
 
 * Parameters: $\mu$, $\sigma$, $p$, $\lambda$, ...
@@ -89,41 +96,11 @@ BASIC CONCEPTS
   * The parameters are **random variables** (they are unkown and uncertain).
   * We describe each parameter as a probability distribution, expressed by a set of **hyperparameters**.
 
-## Continuous random variables
-
-\centering \Huge
-
-$y_i \sim Normal(\mu, \sigma)$
-
-## Continous random variable
-
-* We want to estimate the parameters $\mu$ and $\sigma$ from the data.
-  * We describe the parameters using probability distributions (defined by hyperparameters).
-
-## Continous random variable
-
-\centering \Huge
-
-$y_i \sim Normal(\mu, \sigma)$
-
-$\mu \sim Normal(\mu_1, \sigma_1)$
-
-$\sigma \sim HalfCauchy(x_0, \gamma)$
-
-<!-- ## Bayes' Theorem
-
-\Huge
-
-$$ P(\theta \mid d) = \frac{P(d \mid \theta) \, P(\theta)}{P(d)} $$
-
-## Bayes' Theorem
-
-$$ posterior\ probability = \frac{likelihood \times prior}{marginal\ likelihood} $$ -->
-
 ## Priors 
 
+* We want to estimate the parameters $\mu$ and $\sigma$ from the data.
 * We can incorporate previous knowledge (belief) about the parameters using **priors** (*prior probability distributions*).
-  * We specify the hyperparameters $\mu_1$, $\sigma_1$, $x_0$, $\gamma$ of the prior probability distributions.
+  * We specify the hyperparameters of the prior probability distributions.
 * Priors are chosen based on expert knowledge, previous studies, pilot data...
   * Priors must **not** be chosen based on inspection of the data to be analysed.
 
@@ -131,7 +108,7 @@ $$ posterior\ probability = \frac{likelihood \times prior}{marginal\ likelihood}
 
 \large
 
-$$ prior \times evidence \\ = \\ posterior $$
+$$ observed\ data \times prior\ belief \\ = \\ posterior\ belief $$
 
 ## Bayesian belief update
 
@@ -181,13 +158,11 @@ ggplot() +
 
 \tiny Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
 
-
 ## Italian F1
 
-* $\textit{F1}_i \sim Normal(\mu, \sigma)$ has two parameters, $\mu$ and $\sigma$.
+* $Normal(\mu, \sigma)$ has two parameters, $\mu$ and $\sigma$.
 * $\mu$ and $\sigma$ are random variables (unkown and uncertain).
-* We express these parameters as probability distributions (with hyperparameters).
-  * The probability distributions of the parameters are the **priors**.
+* We express these parameters as priors (probability distributions with hyperparameters).
 
 ## Priors
 
@@ -325,9 +300,9 @@ $\sigma \sim HalfCauchy(0, 25)$
 
 MODEL FITTING
 
-## Italian VOT
+## Italian F1
 
-* We have a model which incorporates (some of) our knowledge about VOT (through the priors for $\mu$ and $\sigma$).
+* We have a model which incorporates our (vague) knowledge about F1 (through the priors for $\mu$ and $\sigma$).
 * Now we want to obtain the **posterior distributions** of $\mu$ and $\sigma$.
   * The posterior distribution is the prior distribution *conditioned* on the data.
 * **brms** R package: Bayesian Regression Models using Stan \citep{burkner2018}.
@@ -392,9 +367,9 @@ vot1 <- brm(
 
 ```{r get-prior, echo=TRUE}
 get_prior(
-  vot ~ 1,
+  f1 ~ 1,
   family = gaussian(),
-  data = ita_egg
+  data = f_end
 )
 ```
 
@@ -406,8 +381,8 @@ nobs <- 1000
 
 y <- matrix(rep(NA, nsim * nobs), ncol = nobs)
 
-mu <- rnorm(nsim, 40, 10)
-sigma <- rhcauchy(nsim, 10)
+mu <- rnorm(nsim, 0, 500)
+sigma <- rhcauchy(nsim, 25)
 
 for (i in 1:nsim) {
   y[i,] <- rnorm(nobs, mean = mu[i], sd = sigma[i])
@@ -458,43 +433,43 @@ wrap_plots(plots, nrow = 3)
 
 ```{r set-prior, echo=TRUE}
 priors <- c(
-  prior(normal(40, 10), class = Intercept),
-  prior(cauchy(0, 10), class = sigma)
+  prior(normal(0, 500), class = Intercept),
+  prior(cauchy(0, 25), class = sigma)
 )
 ```
 
 ## Run the model
 
-```{r vot1, echo=TRUE}
-vot1 <- brm(
-  vot ~ 1,
+```{r f1, echo=TRUE}
+f1_bm <- brm(
+  f1 ~ 1,
   family = gaussian(),
   prior = priors,
-  data = ita_egg,
+  data = f_end,
   chains = 4,
   iter = 2000,
-  file = "./cache/vot1"
+  file = "./cache/f1"
 )
+```
+
+## Plot model
+
+```{r f1-plot, echo=TRUE, fig.width=7, fig.height=4}
+plot(f1_bm)
 ```
 
 ## Model summary
 
 \tiny
 
-```{r vot1-sum, echo=TRUE}
-vot1
-```
-
-## Plot model
-
-```{r vot1-plot, echo=TRUE, fig.width=7, fig.height=4}
-plot(vot1)
+```{r f1-sum, echo=TRUE}
+f1_bm
 ```
 
 ## Posterior predictive check
 
-```{r vot1-pp, echo=TRUE, fig.width=7, fig.height=4}
-pp_check(vot1, nsamples = 100)
+```{r f1-pp, echo=TRUE, fig.width=7, fig.height=4}
+pp_check(f1_bm, nsamples = 100)
 ```
 
 ## Adding predictors
