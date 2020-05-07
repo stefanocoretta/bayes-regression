@@ -108,7 +108,7 @@ $y_i \sim Normal(\mu, \sigma)$
 
 \large
 
-$$ observed\ data \times prior\ belief \\ = \\ posterior\ belief $$
+$$ observed\ data \times prior\ belief = posterior\ belief $$
 
 ## Bayesian belief update
 
@@ -205,7 +205,7 @@ ggplot() +
 
 ## Italian F1
 
-```{r mean-prior, eval=FALSE, echo=TRUE}
+```{r mean-prior-2, eval=FALSE, echo=TRUE}
 ggplot() +
   aes(x = c(-2000, 2000)) +
   stat_function(fun = dnorm, n = 101, args = list(0, 500)) +
@@ -217,13 +217,13 @@ ggplot() +
   )
 ```
 
-## Italian VOT
+## Italian F1
 
 * $Normal(0, 500)$ as the prior for $\mu$.
 * This means that we believe $\mu$ to be between -1000 and +1000 at 95% confidence.
   * 95% credible interval (CI) = $[\mu_1+2\sigma_1, \mu_1-2\sigma_1]$.
 
-## Italian VOT
+## Italian F1
 
 \centering \Large
 
@@ -455,7 +455,13 @@ f1_bm <- brm(
 ## Plot model
 
 ```{r f1-plot, echo=TRUE, fig.width=7, fig.height=4}
-plot(f1_bm)
+plot(f1_bm, ask = FALSE)
+```
+
+## Posterior predictive check
+
+```{r f1-pp, echo=TRUE, fig.width=7, fig.height=4}
+pp_check(f1_bm, nsamples = 100)
 ```
 
 ## Model summary
@@ -466,17 +472,11 @@ plot(f1_bm)
 f1_bm
 ```
 
-## Posterior predictive check
-
-```{r f1-pp, echo=TRUE, fig.width=7, fig.height=4}
-pp_check(f1_bm, nsamples = 100)
-```
-
 ## Adding predictors
 
 $vot_i \sim Normal(\mu_i, \sigma)$
 
-$\mu_i = \alpha + \beta_1 \times coronal_i + \beta_2 \times velar_i$
+$\mu_i = \alpha + \beta_1 \times O_i + \beta_2 \times U_i$
 
 $\alpha \sim Normal(\mu_1, \sigma_1)$
 
@@ -490,15 +490,15 @@ $\sigma \sim HalfCauchy(x_0, \gamma)$
 
 $vot_i \sim Normal(\mu_i, \sigma)$
 
-$\mu_i = \alpha + \beta_1 \times coronal_i + \beta_2 \times velar_i$
+$\mu_i = \alpha + \beta_1 \times O_i + \beta_2 \times U_i$
 
-$\alpha \sim Normal(25, 10)$
+$\alpha \sim Normal(0, 500)$
 
-$\beta_1 \sim Normal(10, 10)$
+$\beta_1 \sim Normal(0, 750)$
 
-$\beta_2 \sim Normal(20, 10)$
+$\beta_2 \sim Normal(0, 750)$
 
-$\sigma \sim HalfCauchy(0, 10)$
+$\sigma \sim HalfCauchy(0, 25)$
 
 ## Adding predictors
 
@@ -506,9 +506,9 @@ $\sigma \sim HalfCauchy(0, 10)$
 
 ```{r get-prior-2, echo=TRUE}
 get_prior(
-  vot ~ 1 + c1_place,
+  f1 ~ 1 + vowel,
   family = gaussian(),
-  data = ita_egg
+  data = f_end
 )
 ```
 
@@ -518,43 +518,55 @@ get_prior(
 
 ```{r set-prior-2, echo=TRUE}
 priors <- c(
-  prior(normal(25, 10), class = Intercept),
-  prior(cauchy(0, 10), class = sigma),
-  prior(normal(10, 10), class = b, coef = "c1_placecoronal"),
-  prior(normal(20, 10), class = b, coef = "c1_placevelar")
+  prior(normal(0, 500), class = Intercept),
+  prior(cauchy(0, 25), class = sigma),
+  prior(normal(0, 750), class = b, coef = "vowelo"),
+  prior(normal(0, 750), class = b, coef = "vowelu")
 )
 ```
 
 ## Adding predictors
 
-```{r vot2, echo=TRUE}
-vot2 <- brm(
-  vot ~ 1 + c1_place,
+```{r f1-2, echo=TRUE}
+f1_2 <- brm(
+  f1 ~ 1 + vowel,
   family = gaussian(),
   prior = priors,
-  data = ita_egg,
+  data = f_end,
   chains = 4,
   iter = 2000,
-  file = "./cache/vot2"
+  file = "./cache/f1_2"
 )
+```
+
+## Adding predictors
+
+```{r f1-2-plot}
+plot(f1_2)
+```
+
+## Adding predictors
+
+```{r f1-2-pp, echo=TRUE, fig.width=7, fig.height=4}
+pp_check(f1_2, nsamples = 50)
 ```
 
 ## Adding predictors
 
 \tiny
 
-```{r vot-sum}
-vot2
+```{r f1-2-sum}
+f1_2
 ```
 
 ## Adding predictors
 
-```{r vot2-areas, echo=TRUE, warning=FALSE, fig.width=7, fig.height=4}
-mcmc_areas(vot2, regex_pars = "b_", prob = 0.95)
+```{r f1-2-areas, echo=TRUE, warning=FALSE, fig.width=7, fig.height=4}
+mcmc_areas(f1_2, regex_pars = "b_", prob = 0.95)
 ```
 
 ## Adding predictors
 
-```{r vot2-cond, echp=TRUE}
-conditional_effects(vot2)
+```{r f1-2-cond, echo=TRUE}
+conditional_effects(f1_2)
 ```
