@@ -8,6 +8,7 @@ output:
     highlight: tango
     latex_engine: xelatex
     fig_caption: false
+    incremental: true
 fontsize: 12pt
 bibliography: linguistics.bib
 biblio-style: unified.bst
@@ -39,17 +40,17 @@ f_end <- readRDS("./data/f_end.rds")
 1. Basic concepts.
 1. Choosing priors.
 1. Model fitting with brms.
-  1. Normal.
-  1. Log-normal.
-  1. Binomial (Bernoulli).
+    1. Normal.
+    1. Log-normal.
+    1. Binomial (Bernoulli).
 1. Bayesian inference.
 
-## Learning outcomes
+<!-- ## Learning outcomes -->
 
-* Understand the basic concepts behind Bayesian statistics and how it differs from frequentist statistics.
-* Understand priors and how to choose them.
-* Be able to set up and fit a Bayesian linear regression model using brms.
-* Understand Bayesian inference methods.
+<!-- * Understand the basic concepts behind Bayesian statistics and how it differs from frequentist statistics. -->
+<!-- * Understand priors and how to choose them. -->
+<!-- * Be able to set up and fit a Bayesian linear regression model using brms. -->
+<!-- * Understand Bayesian inference methods. -->
 
 ## 
 
@@ -164,12 +165,7 @@ ggplot() +
 * $\mu$ and $\sigma$ are random variables (unkown and uncertain).
 * We express these parameters as priors (probability distributions with hyperparameters).
 
-## Priors
-
-* Informative and weakly informative priors.
-* Uninformative or diffuse priors.
-  * Uniform distribution.
-* Regularising priors.
+## Prior for the mean
 
 \centering \Large
 
@@ -179,7 +175,7 @@ $vot_i \sim Normal(\mu, \sigma)$
 
 What prior for $\mu$?
 
-## Italian F1
+## Prior for the mean
 
 \centering \Large
 
@@ -187,43 +183,35 @@ $vot_i \sim Normal(\mu, \sigma)$
 
 $\mu \sim Normal(\mu_1, \sigma_1)$
 
-## Italian F1
+## Prior for the mean
 
-\tiny
+$Normal(0, 500)$ as the prior for $\mu$.
 
-```{r mean-prior, eval=FALSE, echo=TRUE}
-ggplot() +
-  aes(x = c(-2000, 2000)) +
-  stat_function(fun = dnorm, n = 101, args = list(0, 500)) +
-  labs(
-    title = expression(paste("Prior for ", mu)),
-    subtitle = expression(paste(mu, " = 0,  ", sigma, " = 500")),
-    x = element_blank(),
-    y = element_blank()
-  )
-```
-
-## Italian F1
-
-```{r mean-prior-2, eval=FALSE, echo=TRUE}
-ggplot() +
-  aes(x = c(-2000, 2000)) +
-  stat_function(fun = dnorm, n = 101, args = list(0, 500)) +
-  labs(
-    title = expression(paste("Prior for ", mu)),
-    subtitle = expression(paste(mu, " = 0,  ", sigma, " = 500")),
-    x = element_blank(),
-    y = element_blank()
-  )
-```
-
-## Italian F1
-
-* $Normal(0, 500)$ as the prior for $\mu$.
 * This means that we believe $\mu$ to be between -1000 and +1000 at 95% confidence.
   * 95% credible interval (CI) = $[\mu_1+2\sigma_1, \mu_1-2\sigma_1]$.
 
-## Italian F1
+## Prior for the mean
+
+```{r mean-prior}
+ggplot() +
+  aes(x = c(-2000, 2000)) +
+  stat_function(fun = dnorm, n = 101, args = list(0, 500)) +
+  labs(
+    title = expression(paste("Prior for ", mu)),
+    subtitle = expression(paste(mu, " = 0,  ", sigma, " = 500")),
+    x = element_blank(),
+    y = element_blank()
+  )
+```
+
+## Type of priors
+
+* Informative and weakly informative priors.
+* Uninformative or diffuse priors.
+  * Uniform distribution.
+* Regularising priors.
+
+## Prior for the standard deviation
 
 \centering \Large
 
@@ -233,7 +221,7 @@ $\mu \sim Normal(0, 500)$
 
 What about $\sigma$?
 
-## Italian VOT
+## Prior for the standard deviation
 
 \centering \Large
 
@@ -243,26 +231,9 @@ $\mu \sim Normal(0, 500)$
 
 $\sigma \sim HalfCauchy(x_0, \gamma)$
 
-## Cauchy distribution
+## Prior for the standard deviation
 
-\tiny
-
-```{r cauchy-prior, eval=FALSE, echo=TRUE}
-ggplot() +
-  aes(x = c(-100, 100)) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 5), colour = "#1b9e77", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 15), colour = "#d95f02", size = 1) +
-  stat_function(fun = dcauchy, n = 201, args = list(0, 25), colour = "#7570b3", size = 1) +
-  labs(
-    title = "Cauchy distribution",
-    x = element_blank(),
-    y = element_blank()
-  )
-```
-
-## Half Cauchy prior
-
-```{r cauchy-prior-2-p}
+```{r cauchy-prior}
 ggplot() +
   aes(x = c(0, 100)) +
   stat_function(fun = dhcauchy, n = 201, args = list(5), colour = "#1b9e77", size = 1) +
@@ -275,7 +246,7 @@ ggplot() +
   )
 ```
 
-## Half cauchy prior
+## Prior for the standard deviation
 
 ```{r cauchy-2-hdi, echo=TRUE}
 library(HDInterval)
