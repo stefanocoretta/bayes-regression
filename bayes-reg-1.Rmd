@@ -465,7 +465,37 @@ $\sigma \sim HalfCauchy(0, 25)$
 
 \normalsize \centering
 
-Let's add the preditor `vowel`.
+Let's add the predictor `vowel`.
+
+## Adding predictors
+
+$\textit{F1}_i \sim Normal(\mu_i, \sigma)$
+
+## Adding predictors
+
+$\textit{F1}_i \sim Normal(\mu_i, \sigma)$
+
+$\mu_i = \alpha + \beta_1 \times O_i + \beta_2 \times U_i$
+
+## Adding predictors
+
+$\textit{F1}_i \sim Normal(\mu_i, \sigma)$
+
+$\mu_i = \alpha + \beta_1 \times O_i + \beta_2 \times U_i$
+
+$\alpha \sim Normal(\mu_1, \sigma_1)$ [vowel = /a/]
+
+## Adding predictors
+
+$\textit{F1}_i \sim Normal(\mu_i, \sigma)$
+
+$\mu_i = \alpha + \beta_1 \times O_i + \beta_2 \times U_i$
+
+$\alpha \sim Normal(\mu_1, \sigma_1)$ [vowel = /a/]
+
+$\beta_1 \sim Normal(\mu_2, \sigma_2)$ [vowel = /o/]
+
+$\beta_2 \sim Normal(\mu_3, \sigma_3)$ [vowel = /u/]
 
 ## Adding predictors
 
@@ -586,19 +616,21 @@ $$\begin{bmatrix}
 
 $\alpha \sim Normal(0, 500)$
 
-$\alpha_{speaker} \sim Normal(0, \sigma_{speaker})$
-
 $\beta_1 \sim Normal(0, 750)$
 
 $\beta_2 \sim Normal(0, 750)$
 
-$\sigma_{\alpha{speaker}} \sim Normal(0, \sigma_{speaker})$
+$\alpha_{speaker} \sim Normal(0, \sigma_{\alpha speaker})$
+
+$\sigma_{\alpha speaker} \sim HalfCauchy(0, 15)$
+
+$\beta_{1speaker} \sim Normal(0, \sigma_{\beta_1 speaker})$
 
 $\sigma_{\beta{1speaker}} \sim HalfCauchy(0, 15)$
 
-$\sigma_{\beta{2speaker}} \sim HalfCauchy(0, 15)$
+$\beta_{2speaker} \sim Normal(0, \sigma_{\beta_2 speaker})$
 
-$\sigma_{speaker} \sim HalfCauchy(0, 15)$
+$\sigma_{\beta{2speaker}} \sim HalfCauchy(0, 15)$
 
 $\sigma \sim HalfCauchy(0, 15)$
 
@@ -624,7 +656,7 @@ priors <- c(
   prior(cauchy(0, 15), class = sigma),
   prior(normal(0, 750), class = b, coef = "vowelo"),
   prior(normal(0, 750), class = b, coef = "vowelu"),
-  prior(normal(0, 15), class = sd),
+  prior(cauchy(0, 15), class = sd),
   prior(lkj(2), class = cor)
 )
 ```
