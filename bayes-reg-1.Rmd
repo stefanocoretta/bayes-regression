@@ -631,7 +631,7 @@ priors <- c(
 
 ## Random effects
 
-```{r vot3, echo=TRUE}
+```{r f13, echo=TRUE}
 f1_3 <- brm(
   f1 ~ 1 + vowel + (1 + vowel | speaker),
   family = gaussian(),
@@ -645,14 +645,14 @@ f1_3 <- brm(
 
 ## Random effects
 
-```{r vot3-plot}
+```{r f13-plot}
 a <- plot(f1_3, ask = FALSE, plot = FALSE)
 a[[1]]
 ```
 
 ## Random effects
 
-```{r vot3-plot-2}
+```{r f13-plot-2}
 a[[2]]
 ```
 
@@ -660,7 +660,7 @@ a[[2]]
 
 \tiny
 
-```{r vot3-sum}
+```{r f13-sum}
 cat(capture.output(summary(f1_3))[1:16], sep = "\n")
 ```
 
@@ -668,18 +668,18 @@ cat(capture.output(summary(f1_3))[1:16], sep = "\n")
 
 \tiny
 
-```{r vot3-sum-2}
+```{r f13-sum-2}
 cat(capture.output(summary(f1_3))[18:30], sep = "\n")
 ```
 
 ## Random effects
 
-```{r vot3-areas, echo=TRUE, warning=FALSE, fig.width=7, fig.height=4}
+```{r f13-areas, echo=TRUE, warning=FALSE, fig.width=7, fig.height=4}
 mcmc_areas(f1_3, regex_pars = "b_", prob = 0.95)
 ```
 
 ## Random effects
 
-```{r vot3-cond, echp=TRUE}
+```{r f13-cond, echp=TRUE}
 conditional_effects(f1_3)
 ```
