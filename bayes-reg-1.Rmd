@@ -712,6 +712,6 @@ mcmc_areas(f1_3, regex_pars = "b_", prob = 0.95)
 
 ## Random effects
 
-```{r f13-cond, echp=TRUE}
-conditional_effects(f1_3)
+```{r f13-cond, echo=TRUE}
+conditional_effects(f1_3, re_formula = NULL)
 ```
