@@ -169,7 +169,7 @@ ggplot() +
 
 \centering \Large
 
-$vot_i \sim Normal(\mu, \sigma)$
+$\textit{F1}_i \sim Normal(\mu, \sigma)$
 
 \normalsize
 
@@ -179,7 +179,7 @@ What prior for $\mu$?
 
 \centering \Large
 
-$vot_i \sim Normal(\mu, \sigma)$
+$\textit{F1}_i \sim Normal(\mu, \sigma)$
 
 $\mu \sim Normal(\mu_1, \sigma_1)$
 
@@ -188,7 +188,7 @@ $\mu \sim Normal(\mu_1, \sigma_1)$
 $Normal(0, 500)$ as the prior for $\mu$.
 
 * This means that we believe $\mu$ to be between -1000 and +1000 at 95% confidence.
-  * 95% credible interval (CI) = $[\mu_1+2\sigma_1, \mu_1-2\sigma_1]$.
+  * 95% credible interval (CI) = $[\mu_1-2\sigma_1, \mu_1+2\sigma_1]$.
 
 ## Prior for the mean
 
@@ -215,7 +215,7 @@ ggplot() +
 
 \centering \Large
 
-$vot_i \sim Normal(\mu, \sigma)$
+$\textit{F1}_i \sim Normal(\mu, \sigma)$
 
 $\mu \sim Normal(0, 500)$
 
@@ -225,7 +225,7 @@ What about $\sigma$?
 
 \centering \Large
 
-$vot_i \sim Normal(\mu, \sigma)$
+$\textit{F1}_i \sim Normal(\mu, \sigma)$
 
 $\mu \sim Normal(0, 500)$
 
@@ -259,7 +259,7 @@ inverseCDF(c(0.025, 0.975), phcauchy, 25)
 
 \centering \Large
 
-$vot_i \sim Normal(\mu, \sigma)$
+$\textit{F1}_i \sim Normal(\mu, \sigma)$
 
 $\mu \sim Normal(0, 500)$
 
@@ -307,7 +307,7 @@ Safe method:
 ```{r brm, eval=FALSE, echo=TRUE}
 library(brms)
 
-vot1 <- brm(
+f1 <- brm(
   <model_formula>,
   <family>,
   <prior>,
@@ -322,11 +322,11 @@ vot1 <- brm(
 ```{r brm-2, eval=FALSE, echo=TRUE}
 library(brms)
 
-vot1 <- brm(
-  vot ~ 1,
+f1 <- brm(
+  f1 ~ 1,
   family = gaussian(),
   <prior>,
-  data = ita_egg,
+  data = f_end,
   chains = 4,
   iter = 2000
 )
@@ -417,7 +417,7 @@ f1_bm <- brm(
   family = gaussian(),
   prior = priors,
   data = f_end,
-  chains = 4,
+  chains = 1,
   iter = 2000,
   file = "./cache/f1"
 )
