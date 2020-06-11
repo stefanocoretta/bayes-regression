@@ -451,7 +451,7 @@ $\textit{F1}_i \sim Normal(\mu, \sigma)$
 
 $\mu \sim Normal(0, 500)$
 
-$\sigma \sim HalfCauchy(x_0, \gamma)$
+$\sigma \sim HalfCauchy(0, 25)$
 
 ## Adding predictors
 
@@ -461,7 +461,7 @@ $\textit{F1}_i \sim Normal(\mu, \sigma)$
 
 $\mu \sim Normal(0, 500)$
 
-$\sigma \sim HalfCauchy(x_0, \gamma)$
+$\sigma \sim HalfCauchy(0, 25)$
 
 \normalsize \centering
 
