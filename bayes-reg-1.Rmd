@@ -701,7 +701,7 @@ cat(capture.output(summary(f1_3))[1:16], sep = "\n")
 \tiny
 
 ```{r f13-sum-2}
-cat(capture.output(summary(f1_3))[18:30], sep = "\n")
+cat(capture.output(summary(f1_3))[25:40], sep = "\n")
 ```
 
 ## Random effects
