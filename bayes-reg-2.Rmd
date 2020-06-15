@@ -74,146 +74,113 @@ voicing <- filter(pilot, condition == "voicing")
 * Be able to set up and fit a Bayesian linear regression model using brms.
 * Understand Bayesian inference methods.
 
-## Adding predictors
+## 
 
-$vot_i \sim Normal(\mu_i, \sigma)$
+\centering \Huge
 
-$\mu_i = \alpha + \beta_1 \times coronal_i + \beta_2 \times velar_i$
+BAYESIAN INFERENCE
 
-$\alpha \sim Normal(\mu_1, \sigma_1)$
+## Inference
 
-$\beta_1 \sim Normal(\mu_2, \sigma_2)$
+![statistical inference](./img/big_picture_mod1.png)
 
-$\beta_2 \sim Normal(\mu_3, \sigma_3)$
+\tiny Open Learning Initiative, https://oli.cmu.edu/courses/concepts-of-statistics/ (CC BY-NC-SA 4.0)
 
-$\sigma \sim HalfCauchy(x_0, \gamma)$
+## Inference
 
-## Adding predictors
+![Mapping of hypothesis, process models, and statistical models](./img/hps-rel.png)
 
-$vot_i \sim Normal(\mu_i, \sigma)$
+## Inference
 
-$\mu_i = \alpha + \beta_1 \times coronal_i + \beta_2 \times velar_i$
+* We want to know two things:
+  * If there is **evidence for our hypothesis H** (or for the value of the parameter $\theta$), and
+  * What the **strength** of the evidence is.
 
-$\alpha \sim Normal(25, 10)$
+## Inference
 
-$\beta_1 \sim Normal(10, 10)$
+**Inferential statistics**.
 
-$\beta_2 \sim Normal(20, 10)$
+* We test H against empirical data (hypothesis testing).
+  * It is important to decide in advance the details of the analysis (model and prior specification among other things).
+* Inference is ultimately a long-term endaveour (via accumulation of knowledge).
 
-$\sigma \sim HalfCauchy(0, 10)$
+## Inference
 
-## Adding predictors
+Three ways of doing inference (hypothesis testing) with Bayesian statistics:
 
-\tiny
+* Inference from the **posterior**.
+* Inference using a **Region Of Practical Equivalence** (ROPE).
+* Inference using the **Bayes factor**.
 
-```{r get-prior-2, echo=TRUE}
-get_prior(
-  vot ~ 1 + c1_place,
-  family = gaussian(),
-  data = ita_egg
-)
-```
+## Inference from the posterior
 
-## Adding predictors
+1. Formulate **hypothesis**:
+    * H: Condition B decreases reaction times relative to Condition A.
+2. Choose **priors**:
+    * $\beta = HalfNormal(0, -500)$ (plus other relevant priors).
+3. Collect data.
+4. Calculate **posterior**:
+    * Condition B 95% CI = [-80, -15] ms.
+5. **Inference**:
+    * The posterior suggests that Condition B decreases reaction times by 15 to 80 ms at 95% confidence.
 
-\tiny
+## Inference from the posterior
 
-```{r set-prior-2, echo=TRUE}
-priors <- c(
-  prior(normal(25, 10), class = Intercept),
-  prior(cauchy(0, 10), class = sigma),
-  prior(normal(10, 10), class = b, coef = "c1_placecoronal"),
-  prior(normal(20, 10), class = b, coef = "c1_placevelar")
-)
-```
+1. Formulate **hypothesis**:
+    * H: Condition B decreases reaction times relative to Condition A *by 100 ms*.
+2. Choose **priors**:
+    * $\beta = HalfNormal(47.5, 16.25)$ (plus other relevant priors).
+3. Collect data.
+4. Calculate **posterior**:
+    * Condition B 95% CI = [-80, -15] ms.
+5. **Inference**:
+    * The posterior suggests that Condition B decreases reaction times by a smaller amount than expected from H (15 to 80 ms at 95% confidence).
 
-## Adding predictors
+## Inference with a ROPE
 
-```{r vot2, echo=TRUE}
-vot2 <- brm(
-  vot ~ 1 + c1_place,
-  family = gaussian(),
-  prior = priors,
-  data = ita_egg,
-  chains = 4,
-  iter = 2000,
-  file = "./cache/vot2"
-)
-```
+H0 vs H1
 
-## Adding predictors
+* H1 states that Condition B increases segment duration (alternative hypothesis), while H0 states that Condition B does not increase segment duration (null hypthesis, null effect).
+  * $H_1: \beta > 0$
+  * $H_0: \beta = 0$
 
-\tiny
+## Inference with a ROPE
 
-```{r vot-sum}
-vot2
-```
+Region of Practical Equivalence (ROPE):
 
-## Adding predictors
+* Define a region around $\beta = 0$ that practically correponds to a null effect.
+  * For example: [-5, +5] ms ($-5 \geq \beta \leq +5$ = null effect).
+  * This ROPE has a width of 10 ms.
+* Choose a minimal sample size (ideally based on prospective power analyses).
+* Collect data until the 95% CI of $\beta$ has width equal to or smaller than the width of the ROPE.
+  * We focus on the estimate **precision** of $\beta$.
+  * Independent from the value of $\beta$.
+  * Higher precision means greater confidence in the estimated value of $\beta$.
 
-```{r vot2-areas, echo=TRUE, warning=FALSE, fig.width=7, fig.height=4}
-mcmc_areas(vot2, regex_pars = "b_", prob = 0.95)
-```
+## Inference with a ROPE
 
-## Adding predictors
+![Possible scenarios](./img/rope.png)
 
-```{r vot2-cond, echp=TRUE}
-conditional_effects(vot2)
-```
+## Bayes Factor
 
-## Random effects
+The Bayes factor is the ratio of the likelihood of H1 to the likelihood of H2.
 
-\centering \scriptsize
+$BF_{12} = \mathcal{L}(H_1) / \mathcal{L}(H_2)$
 
-$vot_i \sim Normal(\mu_i, \sigma)$
+## Bayes Factor
 
-$\mu_i = \alpha + \alpha_{speaker[i]} + (\beta_1 + \beta_{1speaker[i]}) \times coronal_i + (\beta_2 + \beta_{2speaker[i]}) \times velar_i$
+| BF      | p(M1\|D)    | evidence    |
+|---------|------------|-------------|
+| 1--3    | 0.5--0.75  | weak        |
+| 3--20   | 0.75--0.95 | positive    |
+| 20--150 | 0.95--0.99 | strong      |
+| > 150   | > 0.99     | very strong |
 
-$$\begin{bmatrix}
-\alpha_{speaker}\\
-\beta_{1speaker[i]}\\
-\beta_{2speaker[i]}
-\end{bmatrix} \sim MVNormal(\begin{bmatrix}0\\0\\0\end{bmatrix}, S)$$
-
-## Random effects
-
-\centering \scriptsize
-
-$\alpha \sim Normal(25, 10)$
-
-$\alpha_{speaker} \sim Normal(0, \sigma_{speaker})$
-
-$\beta_1 \sim Normal(10, 10)$
-
-$\beta_2 \sim Normal(20, 10)$
-
-$\sigma_{\alpha{speaker}} \sim Normal(0, \sigma_{speaker})$
-
-$\sigma_{\beta{1speaker}} \sim HalfCauchy(0, 10)$
-
-$\sigma_{\beta{2speaker}} \sim HalfCauchy(0, 10)$
-
-$\sigma_{speaker} \sim HalfCauchy(0, 10)$
-
-$\sigma \sim HalfCauchy(0, 10)$
-
-## Random effects
+## Bayes Factor
 
 \tiny
 
-```{r get-prior-3, echo=TRUE}
-get_prior(
-  vot ~ 1 + c1_place + (1 + c1_place | speaker),
-  family = gaussian(),
-  data = ita_egg
-)
-```
-
-## Random effects
-
-\tiny
-
-```{r set-prior-3, echo=TRUE}
+```{r vot3-bf-priors, echo=TRUE}
 priors <- c(
   prior(normal(40, 10), class = Intercept),
   prior(cauchy(0, 10), class = sigma),
@@ -224,172 +191,58 @@ priors <- c(
 )
 ```
 
-## Random effects
+## Bayes Factor
 
-```{r vot3, echo=TRUE}
-vot3 <- brm(
+```{r vot3-bf, echo=TRUE}
+vot3_bf <- brm(
   vot ~ 1 + c1_place + (1 + c1_place | speaker),
   family = gaussian(),
   prior = priors,
   data = ita_egg,
   chains = 4,
-  iter = 2000,
-  file = "./cache/vot3"
+  iter = 20000,
+  file = "./cache/vot3_bf",
+  save_all_pars = TRUE
 )
 ```
 
-## Random effects
+## Bayes Factor
 
-```{r vot3-plot}
-a <- plot(vot3, ask = FALSE, plot = FALSE)
-a[[1]]
-```
-
-## Random effects
-
-```{r vot3-plot-2}
-a[[2]]
-```
-
-## Random effects
-
-\tiny
-
-```{r vot3-sum}
-cat(capture.output(summary(vot3))[1:16], sep = "\n")
-```
-
-## Random effects
-
-\tiny
-
-```{r vot3-sum-2}
-cat(capture.output(summary(vot3))[18:30], sep = "\n")
-```
-
-## Random effects
-
-```{r vot3-areas, echo=TRUE, warning=FALSE, fig.width=7, fig.height=4}
-mcmc_areas(vot3, regex_pars = "b_", prob = 0.95)
-```
-
-## Random effects
-
-```{r vot3-cond, echp=TRUE}
-conditional_effects(vot3)
-```
-
-## Italian VOT
-
-* Voice Onset Time (VOT): Time difference (ms) between the release of a stop and the onset of voicing (vocal fold vibration).
-* Toy study of Italian VOT in stops.
-
-$$ vot_i \sim Normal(\mu, \sigma) $$
-
-## Italian VOT
-
-* Previous literature on VOT in Italian \citep{esposito2002, stevens2010a} report VOT values for voiceless stops in the range of 20--60 ms.
-* We can include our knowledge with a prior for $\mu$.
-  * $Normal(40, 10)$.
-  * This is a somewhat strongly informative prior.
-
-## Italian VOT
-
-\tiny
-
-```{r mean-prior, eval=FALSE, echo=TRUE}
-ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
-```
-
-## Italian VOT
-
-```{r mean-prior-p}
-ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 10)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 10")
-```
-
-## Normal prior
-
-![empirical rule](./img/Empirical_rule_histogram.svg.png){width=250px}
-
-\tiny Melikamp, https://commons.wikimedia.org/wiki/File:Empirical_rule_histogram.svg (CC BY-SA 4.0)
-
-## Italian VOT
-
-\tiny
-
-```{r mean-prior-2, eval=FALSE, echo=TRUE}
-ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
-```
-
-## Italian VOT
-
-```{r mean-prior-2-p}
-ggplot() +
-  aes(x = c(-30, 110)) +
-  stat_function(fun = dnorm, n = 101, args = list(40, 20)) +
-  labs(title = "Normal (Gaussian) distribution", subtitle = "mean = 40, SD = 20")
-```
-
-## Italian VOT
-
-\centering \Large
-
-$vot_i \sim Normal(\mu, \sigma)$
-
-$\mu \sim Normal(40, 10)$
-
-What about $\sigma$?
-
-## Italian VOT
-
-\centering \Large
-
-$vot_i \sim Normal(\mu, \sigma)$
-
-$\mu \sim Normal(40, 10)$
-
-$\sigma \sim HalfCauchy(x_0, \gamma)$
-
-<!-- ## Binomial logistic regression
-
-```{r set-prior-burst, echo=TRUE}
-priors <- c(
-  prior(student_t(3, 0, 2), class = Intercept),
-  prior(student_t(3, 0, 2), class = b),
-  prior(cauchy(0, 1), class = sd),
-  prior(lkj(2), class = cor)
+```{r vot3-bf-null-priors, echo=TRUE}
+priors_null <- c(
+  prior(normal(40, 10), class = Intercept),
+  prior(cauchy(0, 10), class = sigma),
+  prior(normal(0, 25), class = sd)
 )
 ```
 
-## Binomial logistic regression
+## Bayes Factor
 
-```{r burst, echo=TRUE}
-burst1 <- brm(
-  response_n ~
-    burst *
-    vowel +
-    (1+burst|participant),
-  data = burst,
-  prior = priors,
-  family = bernoulli,
-  file = "./cache/burst1",
-  control = list(adapt_delta = 0.999)
+```{r vot3-bf-null, echo=TRUE}
+vot3_bf_null <- brm(
+  vot ~ 1 + c1_place + (1 | speaker),
+  family = gaussian(),
+  prior = priors_null,
+  data = ita_egg,
+  chains = 4,
+  iter = 20000,
+  file = "./cache/vot3_bf_null",
+  save_all_pars = TRUE
 )
 ```
 
-## Binomial logistic regression
+## Bayes Factor
 
-```{r plot-cond-burst, echo=TRUE}
-conditional_effects(burst1, effects = "burst:vowel")
+```{r bf, echo=TRUE, cache=TRUE, dependson=c("vot3-bf-priors", "vot3-bf", "vot3-bf-null-priors", "vot3-bf-null")}
+bf <- bayes_factor(vot3_bf, vot3_bf_null)
 ```
--->
 
+## Bayes Factor
+
+\tiny
+
+```{r bf-2, echo=TRUE}
+bf
+```
+
+## Sensitivity analysis
