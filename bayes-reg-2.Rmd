@@ -59,46 +59,68 @@ voicing <- filter(pilot, condition == "voicing")
 
 ## Road map
 
-1. Inference.
+1. Statistical inference.
+2. Frequentist inference.
 1. Bayesian inference:
     1. Posterior distributions.
     1. ROPE.
     1. Bayes factors.
 
-## 
+##
 
 \centering \Huge
 
-INFERENCE
+STATISTICAL INFERENCE
 
-## Inference
+## Statistics
 
-![statistical inference](./img/big_picture_mod1.png)
+[add image]
 
-\tiny Open Learning Initiative, https://oli.cmu.edu/courses/concepts-of-statistics/ (CC BY-NC-SA 4.0)
+## Hypothesis testing
 
-## Inference
-
-![Mapping of hypothesis, process models, and statistical models](./img/hps-rel.png)
-
-## Inference
-
-We want to know two things:
+We want to know two (interrelated) things:
 
 * Is there **evidence** for the hypothesis H?
 * What is the **strength** of the evidence?
 
-## Inference
+## Hypothesis testing
 
-**Inferential statistics**.
+* We test H against empirical data (**hypothesis testing**).
+  * It is important to decide in advance the details of the analysis.
+  * Even when you think you are not making decisions, the model is).
+* Inference is ultimately a **long-term endeavour** (via accumulation of knowledge).
 
-* We test H against empirical data (hypothesis testing).
-  * It is important to decide in advance the details of the analysis (model and prior specification among other things).
-* Inference is ultimately a long-term endaveour (via accumulation of knowledge).
+## Hypothesis testing
 
-## Inference
+![Mapping of hypothesis, process models, and statistical models](./img/hps-rel.png)
 
-Three ways of doing inference (hypothesis testing) with Bayesian statistics:
+##
+
+\centering \Huge
+
+FREQUENTIST INFERENCE
+
+## Frequentist statistics
+
+* **Frequentist statistics** is based on the frequentist interpretation of probability.
+* **Frequentist probability of an event** is the *relative frequency* of occurrence of an event within a set of (imagined) multiple repetitions of that event.
+* Most of modern science is based on *frequentism*.
+  * lme4 package.
+  * **Null Hypothesis Significance Testing**.
+
+## Null Hypothesis Significance Testing
+
+
+
+##
+
+\centering \Huge
+
+BAYESIAN INFERENCE
+
+## Bayesian inference
+
+Three ways of doing hypothesis testing with Bayesian statistics:
 
 * Inference from the **posterior**.
 * Inference using a **Region Of Practical Equivalence** (ROPE).
@@ -106,33 +128,33 @@ Three ways of doing inference (hypothesis testing) with Bayesian statistics:
 
 ## Inference from the posterior
 
-1. Formulate **hypothesis**:
+1. Formulate a **hypothesis**:
     * H: Condition B decreases reaction times relative to Condition A.
-2. Choose **priors**:
-    * $\beta = HalfNormal(0, -500)$ (plus other relevant priors).
+2. Choose **model specification** (including priors).
 3. Collect data.
-4. Calculate **posterior**:
+4. Calculate the **posterior** (fit the model):
     * Condition B 95% CI = [-80, -15] ms.
 5. **Inference**:
     * The posterior suggests that Condition B decreases reaction times by 15 to 80 ms at 95% confidence.
+    * The posterior is **compatible with H**.
 
 ## Inference from the posterior
 
-1. Formulate **hypothesis**:
+1. Formulate a **hypothesis**:
     * H: Condition B decreases reaction times relative to Condition A *by 100 ms*.
-2. Choose **priors**:
-    * $\beta = HalfNormal(47.5, 16.25)$ (plus other relevant priors).
+2. Choose **model specification** (including priors).
 3. Collect data.
-4. Calculate **posterior**:
+4. Calculate the **posterior** (fit the model):
     * Condition B 95% CI = [-80, -15] ms.
 5. **Inference**:
-    * The posterior suggests that Condition B decreases reaction times by a smaller amount than expected from H (15 to 80 ms at 95% confidence).
+    * The posterior suggests that Condition B decreases reaction times by 15 to 80 ms at 95% confidence.
+    * The posterior is **not compatible with H**.
 
 ## Inference with a ROPE
 
 H0 vs H1
 
-* H1 states that Condition B increases segment duration (alternative hypothesis), while H0 states that Condition B does not increase segment duration (null hypthesis, null effect).
+* H1 states that Condition B increases reaction times (alternative hypothesis), while H0 states that Condition B does not increase reaction times (null hypothesis, null effect).
   * $H_1: \beta > 0$
   * $H_0: \beta = 0$
 
@@ -140,11 +162,11 @@ H0 vs H1
 
 Region of Practical Equivalence (ROPE):
 
-* Define a region around $\beta = 0$ that practically correponds to a null effect.
+* Define a region around $\beta = 0$ that practically corresponds to a null effect.
   * For example: [-5, +5] ms ($-5 \geq \beta \leq +5$ = null effect).
   * This ROPE has a width of 10 ms.
-* Choose a minimal sample size (ideally based on prospective power analyses).
-* Collect data until the 95% CI of $\beta$ has width equal to or smaller than the width of the ROPE.
+* Choose a minimal sample size (ideally based on a prospective power analysis).
+* Collect data until the 95% CI of $\beta$ has a width equal to or smaller than the width of the ROPE.
   * We focus on the estimate **precision** of $\beta$.
   * Independent from the value of $\beta$.
   * Higher precision means greater confidence in the estimated value of $\beta$.
