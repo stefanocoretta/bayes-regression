@@ -1,5 +1,5 @@
 ---
-title: "Introduction to Bayesian linear regression with brms"
+title: "Introduction to Bayesian linear regression with brms --- Part II: Bayesian Inference"
 author: "Stefano Coretta"
 date: "18/01/2020"
 output:
@@ -59,26 +59,17 @@ voicing <- filter(pilot, condition == "voicing")
 
 ## Road map
 
-1. Basic concepts.
-1. Choosing priors.
-1. Model fitting with brms.
-  1. Normal.
-  1. Log-normal.
-  1. Binomial (Bernoulli).
-1. Bayesian inference.
-
-## Learning outcomes
-
-* Understand the basic concepts behind Bayesian statistics and how it differs from frequentist statistics.
-* Understand priors and how to choose them.
-* Be able to set up and fit a Bayesian linear regression model using brms.
-* Understand Bayesian inference methods.
+1. Inference.
+1. Bayesian inference:
+    1. Posterior distributions.
+    1. ROPE.
+    1. Bayes factors.
 
 ## 
 
 \centering \Huge
 
-BAYESIAN INFERENCE
+INFERENCE
 
 ## Inference
 
@@ -92,9 +83,10 @@ BAYESIAN INFERENCE
 
 ## Inference
 
-* We want to know two things:
-  * If there is **evidence for our hypothesis H** (or for the value of the parameter $\theta$), and
-  * What the **strength** of the evidence is.
+We want to know two things:
+
+* Is there **evidence** for the hypothesis H?
+* What is the **strength** of the evidence?
 
 ## Inference
 
