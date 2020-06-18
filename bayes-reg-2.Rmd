@@ -103,14 +103,31 @@ FREQUENTIST INFERENCE
 ## Frequentist statistics
 
 * **Frequentist statistics** is based on the frequentist interpretation of probability.
-* **Frequentist probability of an event** is the *relative frequency* of occurrence of an event within a set of (imagined) multiple repetitions of that event.
+* **Frequentist probability of an event** is the *relative frequency* of occurrence of an event within an infinite set of imagined repetitions of that event.
 * Most of modern science is based on *frequentism*.
   * lme4 package.
   * **Null Hypothesis Significance Testing**.
 
 ## Null Hypothesis Significance Testing
 
+* NHST is based on falsification.
+  * Rejection of the Null Hypothesis ($H_0$).
+* *P*-value (between 0 and 1).
+  * Probability of obtaining an estimate as extreme or more extreme, *assuming $H_0$ is true*.
+  * Should be as low as possible.
 
+## Null Hypothesis Significance Testing
+
+* Significance is dichotomous.
+  * $p < \alpha$ = "significant".
+  * $p \geq \alpha$ = "non-significant".
+* No degrees of significance.
+  * No direct "support/evidence" for hypotheses.
+* "Significance" is a concept that makes sense only within frequentist statistics (NHST).
+
+## Confidence intervals
+
+<https://rpsychologist.com/d3/ci/>
 
 ##
 
