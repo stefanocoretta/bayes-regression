@@ -74,7 +74,7 @@ STATISTICAL INFERENCE
 
 ## Statistics
 
-[add image]
+![Types of statistics](./img/statistics.png)
 
 ## Hypothesis testing
 
@@ -87,7 +87,7 @@ We want to know two (interrelated) things:
 
 * We test H against empirical data (**hypothesis testing**).
   * It is important to decide in advance the details of the analysis.
-  * Even when you think you are not making decisions, the model is).
+  * Even when you think you are not making decisions, the model is.
 * Inference is ultimately a **long-term endeavour** (via accumulation of knowledge).
 
 ## Hypothesis testing
@@ -112,6 +112,7 @@ FREQUENTIST INFERENCE
 
 * NHST is based on falsification.
   * Rejection of the Null Hypothesis ($H_0$).
+  * No direct "support/evidence" for hypotheses.
 * *P*-value (between 0 and 1).
   * Probability of obtaining an estimate as extreme or more extreme, *assuming $H_0$ is true*.
   * Should be as low as possible.
@@ -122,10 +123,9 @@ FREQUENTIST INFERENCE
   * $p < \alpha$ = "significant".
   * $p \geq \alpha$ = "non-significant".
 * No degrees of significance.
-  * No direct "support/evidence" for hypotheses.
 * "Significance" is a concept that makes sense only within frequentist statistics (NHST).
 
-## Confidence intervals
+## (Frequentist) confidence intervals
 
 <https://rpsychologist.com/d3/ci/>
 
