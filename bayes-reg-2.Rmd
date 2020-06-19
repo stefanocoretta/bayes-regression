@@ -137,6 +137,18 @@ BAYESIAN INFERENCE
 
 ## Bayesian inference
 
+Bayesian statistics is based on the Bayesian interpretation of the **Bayes theorem**.
+
+$$ P(\theta \mid d) = \frac{P(d \mid \theta) \times P(\theta)}{P(d)} $$
+
+## Bayesian inference
+
+* Evidence for any H (even the null).
+* Strength of evidence.
+* Capitalise on previous knowledge.
+
+## Bayesian inference
+
 Three ways of doing hypothesis testing with Bayesian statistics:
 
 * Inference from the **posterior**.
@@ -177,20 +189,23 @@ H0 vs H1
 
 ## Inference with a ROPE
 
-Region of Practical Equivalence (ROPE):
+Region Of Practical Equivalence (ROPE):
 
 * Define a region around $\beta = 0$ that practically corresponds to a null effect.
   * For example: [-5, +5] ms ($-5 \geq \beta \leq +5$ = null effect).
   * This ROPE has a width of 10 ms.
 * Choose a minimal sample size (ideally based on a prospective power analysis).
 * Collect data until the 95% CI of $\beta$ has a width equal to or smaller than the width of the ROPE.
-  * We focus on the estimate **precision** of $\beta$.
-  * Independent from the value of $\beta$.
-  * Higher precision means greater confidence in the estimated value of $\beta$.
 
 ## Inference with a ROPE
 
 ![Possible scenarios](./img/rope.png)
+
+## Inference with a ROPE
+
+* We focus on the estimate **precision** of $\beta$.
+* Independent from the value of $\beta$.
+* Higher precision means greater confidence in the estimated value of $\beta$.
 
 ## Bayes Factor
 
@@ -222,58 +237,58 @@ priors <- c(
 )
 ```
 
-## Bayes Factor
+<!-- ## Bayes Factor -->
 
-```{r vot3-bf, echo=TRUE}
-vot3_bf <- brm(
-  vot ~ 1 + c1_place + (1 + c1_place | speaker),
-  family = gaussian(),
-  prior = priors,
-  data = ita_egg,
-  chains = 4,
-  iter = 20000,
-  file = "./cache/vot3_bf",
-  save_all_pars = TRUE
-)
-```
+<!-- ```{r vot3-bf, echo=TRUE} -->
+<!-- vot3_bf <- brm( -->
+<!--   vot ~ 1 + c1_place + (1 + c1_place | speaker), -->
+<!--   family = gaussian(), -->
+<!--   prior = priors, -->
+<!--   data = ita_egg, -->
+<!--   chains = 4, -->
+<!--   iter = 20000, -->
+<!--   file = "./cache/vot3_bf", -->
+<!--   save_all_pars = TRUE -->
+<!-- ) -->
+<!-- ``` -->
 
-## Bayes Factor
+<!-- ## Bayes Factor -->
 
-```{r vot3-bf-null-priors, echo=TRUE}
-priors_null <- c(
-  prior(normal(40, 10), class = Intercept),
-  prior(cauchy(0, 10), class = sigma),
-  prior(normal(0, 25), class = sd)
-)
-```
+<!-- ```{r vot3-bf-null-priors, echo=TRUE} -->
+<!-- priors_null <- c( -->
+<!--   prior(normal(40, 10), class = Intercept), -->
+<!--   prior(cauchy(0, 10), class = sigma), -->
+<!--   prior(normal(0, 25), class = sd) -->
+<!-- ) -->
+<!-- ``` -->
 
-## Bayes Factor
+<!-- ## Bayes Factor -->
 
-```{r vot3-bf-null, echo=TRUE}
-vot3_bf_null <- brm(
-  vot ~ 1 + c1_place + (1 | speaker),
-  family = gaussian(),
-  prior = priors_null,
-  data = ita_egg,
-  chains = 4,
-  iter = 20000,
-  file = "./cache/vot3_bf_null",
-  save_all_pars = TRUE
-)
-```
+<!-- ```{r vot3-bf-null, echo=TRUE} -->
+<!-- vot3_bf_null <- brm( -->
+<!--   vot ~ 1 + c1_place + (1 | speaker), -->
+<!--   family = gaussian(), -->
+<!--   prior = priors_null, -->
+<!--   data = ita_egg, -->
+<!--   chains = 4, -->
+<!--   iter = 20000, -->
+<!--   file = "./cache/vot3_bf_null", -->
+<!--   save_all_pars = TRUE -->
+<!-- ) -->
+<!-- ``` -->
 
-## Bayes Factor
+<!-- ## Bayes Factor -->
 
-```{r bf, echo=TRUE, cache=TRUE, dependson=c("vot3-bf-priors", "vot3-bf", "vot3-bf-null-priors", "vot3-bf-null")}
-bf <- bayes_factor(vot3_bf, vot3_bf_null)
-```
+<!-- ```{r bf, echo=TRUE, cache=TRUE, dependson=c("vot3-bf-priors", "vot3-bf", "vot3-bf-null-priors", "vot3-bf-null")} -->
+<!-- bf <- bayes_factor(vot3_bf, vot3_bf_null) -->
+<!-- ``` -->
 
-## Bayes Factor
+<!-- ## Bayes Factor -->
 
-\tiny
+<!-- \tiny -->
 
-```{r bf-2, echo=TRUE}
-bf
-```
+<!-- ```{r bf-2, echo=TRUE} -->
+<!-- bf -->
+<!-- ``` -->
 
-## Sensitivity analysis
+<!-- ## Sensitivity analysis -->
