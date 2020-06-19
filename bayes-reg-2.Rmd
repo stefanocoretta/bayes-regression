@@ -8,6 +8,7 @@ output:
     highlight: tango
     latex_engine: xelatex
     fig_caption: false
+    incremental: true
 fontsize: 12pt
 bibliography: linguistics.bib
 biblio-style: unified.bst
