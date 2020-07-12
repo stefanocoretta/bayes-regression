@@ -37,31 +37,6 @@ ita_egg <- drop_na(ita_egg, vot)
 f_end <- readRDS("./data/f_end.rds")
 ```
 
-```{r read-bernoulli-data, message=FALSE, warning=FALSE}
-pilot <- list.files(
-  path = "./data/perceptual/",
-  pattern = "*.csv",
-  full.names = TRUE
-) %>%
-  map_df(~read_csv(., col_types = cols(.default = "c"))) %>%
-  mutate(
-    key_resp_2.keys = ifelse(key_resp_2.keys == "z", "d", "t"),
-    key_resp_8.keys = ifelse(key_resp_8.keys == "z", "t", "d"),
-    response = coalesce(key_resp_2.keys, key_resp_8.keys),
-    response = factor(response, levels = c("t", "d")),
-    burst = as.numeric(burst),
-    voicing = as.numeric(voicing),
-    response_n = as.numeric(response) - 1,
-    vowel = factor(vowel, levels = c("a", "i", "u"))
-  ) %>%
-  filter(!is.na(response))
-
-contrasts(pilot$vowel) <- "contr.sum"
-
-burst <- filter(pilot, condition == "burst")
-voicing <- filter(pilot, condition == "voicing")
-```
-
 ## Road map
 
 1. Statistical inference.
