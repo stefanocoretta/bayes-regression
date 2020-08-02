@@ -221,11 +221,11 @@ This is a very weakly informative prior (anything goes).
 Now, for the prior of the effect of `burst` we can use the prior `normal(0, 2.5)`.
 The 95% CI of this prior is [-5, +5].
 Since `burst` is a numeric variable, the effect of `burst` on the probability of getting a "voiceless" response is based on the unit increase of `burst`, which means that the effect of `burst` tells us what is the change in probability when increasing the duration of the burst by 1 unit relative to the intercept.
-The change in probability can be expressed in odds.
+Probabilities can also be expressed in odds and the change in probability can be expressed as change in odds.
 
-Odds (or odd-ratios) can be calculated from log-odds by exponentiating the log-odds with the `exp()` function.
+Odds (or odd-ratios) can be calculated from log-odds by exponentiating the log-odds with the `exp()` function (this will come handy when we'll look at Poisson models).
 For example, a log-odd of 0 corresponds to an odd of 1 ($exp(0) = 1$), i.e. there is no change.
-A log-odd of 5 is 148 in odds, meaning that there is an increase in effect by a magnitude of 148, which is quite a big effect (note that with probabilities, odds asymptotically increase to infinity when approaching a probability of 1).
+A log-odd of 5 is 148 in odds, meaning that there is an increase in odds by a magnitude of 148, which is quite a big effect.
 So a `normal(0, 2.5)` prior is a very weakly informative prior.
 
 We can now define our priors.
