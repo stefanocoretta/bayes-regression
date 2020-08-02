@@ -101,13 +101,13 @@ Let's assume you asked a yes/no question and participants answered either "yes" 
 You have to indicate the total number of trials (for example, 20 participants), and the number of trials in which the participants have answered "yes" (= 1).
 For example, 15/20 participants have answered "yes".
 
-However, binary oucome variables can also be formalised through the **Bernoulli distribution**.
+However, binary outcome variables can also be formalised through the **Bernoulli distribution**.
 The Bernoulli distribution is a special case of the binomial, where the total number of trials $n$ is 1, and $p$ is the probability of one of the two oucomes (for example, "yes", 1).
 With the Bernoulli distribution, the data is generally entered as we normally do, i.e. for each observation we state whether the answer was 0 or 1 ("yes" or "no", etc...).
 In this format, we don't have to specify the total number of trials.
 
 If you used `glm[er]()` with `family = binomial` before, note that the model automatically uses the Bernoulli distribution when you don't specify the total number of trials and the data is in the "long" format (one trial per row, specifying what the outcome was).
-On the other hand, `brms()` does not do this, so you have to explicity use the `bernoulli()` family when you want to fit "binomial regressions".
+On the other hand, `brms()` does not do this, so you have to explicitly use the `bernoulli()` family when you want to fit "binomial regressions".
 
 ## Example: perception of voicing in Italian
 
@@ -151,15 +151,103 @@ get_prior(
 )
 ```
 
-So, apprently nothing unusual.
-There's an `Intercept`, `b` for `burst`, `cor` because we included a random slope, and `sd` for the random intercept.
+So, nothing unusual.
+There's an `Intercept`, `b` for burst, `cor` because we included a random slope, and `sd` for the random intercept.
 
 There's a catch though.
-Since what we are modelling here is a probability, which is a number between 0 and 1, we have to use a so-called "link function" that maps numbers between 0 and 1 to a countinous scale of unbounded numbers.
-These numbers on a continous scale are used to estimate the coefficients of the model.
+Since what we are modelling here is a probability, which is a number between 0 and 1, we have to use a "link function" that maps (transforms) the numbers between 0 and 1 of the outcome variable to a continuous scale of unbounded numbers.
+These numbers on a continuous scale are used to estimate the coefficients of the model.
 (I won't explain link functions in details, and you might be familiar with the concept already if you fitted binomial regressions before).
 
-The link function of Bernoulli models is the logistic unit function, or "logit" function for short.
+The link function of Bernoulli models is the logistic unit function, or "logit" function for short (the link function for Gaussian/normal models is the "identity" function, which means that the outcome variable is not transformed).
 When using the logit function, the coefficients returned by the model are in log-odds, not probabilities.
 So priors need to be specified on that same scale, namely log-odds, which makes things a bit less straightforward.
+
+### Priors for models using Bernoulli distributions
+
+Priors for models that use the Bernoulli distribution for the outcome variable have to be defined on the log-odd scale.
+It is thus helpful to know how percentages (numbers between 0 and 1) map onto log-odds.
+
+The following plot shows percentages on the *x*-axis and the corresponding log-odds on the *y*-axis.
+You will notice that a 50% probability ($p = 0.5$) corresponds to a log-odd of 0.
+Probabilities smaller than 0.5 map onto negative log-odds, while probabilities greater than 0.5 map onto positive log-odds.
+Finally, when approaching probabilities 0 and 1, the change in log-odds decreases asymptotically (ad infinitum), so that most of the variation in log-odds is within the range -7 and +7.
+Since log-odds increase/decrease asymptotically, they are on a continuous scale and can be used in a regression model.
+
+```{r p-log-odds}
+tibble(
+  p = seq(0, 1, by = 0.001),
+  log_odds = qlogis(p)
+) %>%
+  ggplot(aes(p, log_odds)) +
+  geom_hline(aes(yintercept = 0), alpha = 0.5) +
+  geom_line() +
+  scale_y_continuous(breaks = seq(-6, 6, by = 2)) +
+  labs(
+    title = "Correspondence between probabilities and log-odds",
+    x = "probability",
+    y = "log-odds"
+  )
+```
+A quick way to know which log-odd corresponds to which probability (and vice versa) is to use the functions `plogis()` and `qlogis()` (`logis` stands for "logistic function").
+
+```{r logis}
+# log-odds = 0; get probability
+plogis(0)
+# p = 0.5; get log-odds
+qlogis(0.5)
+```
+
+I suggest playing with these two functions to familiarise yourself better with the logit function.
+
+We can start now with the prior for the intercept of our model of voicing perception.
+In our model, the intercept is the probability of obtaining a "voiceless" response when the burst duration is 0.
+A very weakly informative prior would be one which includes the whole range of probabilities, but in which a probability of 0 or 1 are less likely than probabilities around 0.5.
+Such prior can be expressed by a normal distribution with mean 0 and standard deviation 5 (`normal(0, 5)`).
+
+To see why, we can do our usual maths to get the 95% credible interval: mean - 2 times the standard deviation = 0 - 2 x 5 = -10, mean + 2 times the standard deviation = 0 + 2 * 5 = +10.
+So, the 95% credible interval for `normal(0, 5)` is [-10, +10].
+This interval is in log-odds and to get the respective probabilities we can use the `plogis()` function.
+
+```{r p-ci}
+plogis(-10)
+plogis(10)
+```
+
+The output shows that a log-odd of -10 corresponds approximately to a probability of 0.000045, while a log-odd of 10 corresponds almost to a probability of 1.
+In sum, a `normal(0, 5)` prior corresponds to a belief that the probability of obtaining a "voiceless" response when the burst duration is 0 is anything between 0 and 1 at 95% confidence.
+This is a very weakly informative prior (anything goes).
+
+Now, for the prior of the effect of `burst` we can use the prior `normal(0, 2.5)`.
+The 95% CI of this prior is [-5, +5].
+Since `burst` is a numeric variable, the effect of `burst` on the probability of getting a "voiceless" response is based on the unit increase of `burst`, which means that the effect of `burst` tells us what is the change in probability when increasing the duration of the burst by 1 unit relative to the intercept.
+The change in probability can be expressed in odds.
+
+Odds (or odd-ratios) can be calculated from log-odds by exponentiating the log-odds with the `exp()` function.
+For example, a log-odd of 0 corresponds to an odd of 1 ($exp(0) = 1$), i.e. there is no change.
+A log-odd of 5 is 148 in odds, meaning that there is an increase in effect by a magnitude of 148, which is quite a big effect (note that with probabilities, odds asymptotically increase to infinity when approaching a probability of 1).
+So a `normal(0, 2.5)` prior is a very weakly informative prior.
+
+We can now define our priors.
+
+```{r burst-priors}
+priors <- c(
+  prior(normal(0, 5), class = Intercept),
+  prior(normal(0, 2.5), class = b)
+)
+```
+
+And fit the model.
+
+```{r burst-bm, eval=FALSE}
+burst_bm <- brm(
+  response ~
+    burst +
+    (burst | participant),
+  data = burst,
+  family = bernoulli(),
+  prior = priors,
+  file = "./cache/burst_bm"
+)
+```
 
